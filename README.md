@@ -15,11 +15,11 @@
   <img src="docs/assets/shots/window.webp" width="760" alt="SlimeUI window with the Slime theme">
 </p>
 
-SlimeUI is a UI library for Roblox scripts with a macOS-style Liquid Glass look. You build a full script hub (tabs, toggles, sliders, dropdowns, keybinds, notifications, a key system and saved configs) in a few lines of Lua, and it looks good on both PC and mobile.
+SlimeUI is a UI library for Roblox scripts. You build a full script hub (tabs, toggles, sliders, dropdowns, keybinds, notifications, a key system and saved configs) in a few lines of Lua, and it looks good on both PC and mobile.
 
 ## Why SlimeUI
 
-- **Liquid Glass design.** Translucent windows, refractive edges that catch the light from your cursor, a light sweep when the window opens, and smooth animations on every control.
+- **Polished look.** Translucent windows, glowing edges, and smooth animations on every control.
 - **Simple API.** Each element is one line, or a table when you need more options. No setup beyond `CreateWindow`.
 - **9 themes, plus your own.** `Glass`, `Slime`, `Dark`, `Light`, `Midnight`, `Ocean`, `Sakura`, `Amethyst` and `Sunset`, switchable at runtime. Add your own with `SlimeUI:AddTheme`.
 - **The Slime theme.** Green-to-cyan glass with a wavy slime coat on the top edge, dripping slime, glossy rising bubbles and a jelly bounce.

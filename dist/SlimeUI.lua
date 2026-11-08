@@ -1,6 +1,6 @@
 --[[
     SlimeUI v1.0.0
-    Liquid Glass UI library for Roblox, inspired by macOS
+    UI library for Roblox scripts
 
     Author:  SlimexDev
     Source:  https://github.com/SlimexDev/SlimeUI  (src/ folder)
@@ -4098,7 +4098,7 @@ function SlimeUI:CreateWindow(opts)
         local About = S:Section("About")
         About:Paragraph({
             Title = Window.Title .. "  v" .. SlimeUI.Version,
-            Content = "UI library by " .. SlimeUI.Author .. ". Liquid Glass design inspired by macOS 27.",
+            Content = "UI library for Roblox scripts by " .. SlimeUI.Author .. ".",
         })
         About:Button({
             Name = "Unload UI",

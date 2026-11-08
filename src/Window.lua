@@ -77,7 +77,7 @@ function SlimeUI:CreateWindow(opts)
         return c
     end
 
-    -- Bố cục: thường hoặc gọn (điện thoại / màn hình nhỏ)
+    -- Layout: regular or compact (phones / small screens)
     local vp0 = ViewportSize()
     local compact
     if opts.Compact ~= nil then
@@ -114,7 +114,7 @@ function SlimeUI:CreateWindow(opts)
     Window.Gui = Gui
 
     -----------------------------------------------------------------
-    -- Khung cửa sổ
+    -- Window frame
     -----------------------------------------------------------------
     local size0 = TargetSize()
     local Holder = New("Frame", {
@@ -128,7 +128,7 @@ function SlimeUI:CreateWindow(opts)
     })
     local Scale = New("UIScale", { Scale = FitScale() * 0.92, Parent = Holder })
 
-    -- CanvasGroup: bo góc thật + làm mờ dần cả cửa sổ
+    -- CanvasGroup: real rounded clipping + fading the whole window
     local Main = New("CanvasGroup", {
         Name = "Main",
         Size = UDim2.fromScale(1, 1),
@@ -147,7 +147,7 @@ function SlimeUI:CreateWindow(opts)
     local Edge, EdgeGrad = GlassEdge(EdgeFrame, 1.2)
     Edge.Transparency = 1
 
-    -- Ánh sáng phía trên + dải khúc xạ (liquid glass)
+    -- Top sheen + refraction band (liquid glass)
     local Sheen = New("Frame", {
         Size = UDim2.new(1, 0, 0, 170),
         BackgroundColor3 = WHITE,
@@ -170,7 +170,7 @@ function SlimeUI:CreateWindow(opts)
         BandGrad.Transparency = NumberSequence.new({ NSK(0, 1), NSK(0.5, T.Band), NSK(1, 1) })
     end)
 
-    -- Hiệu ứng kính lỏng: viền trong có tán sắc, viền sáng xoay theo hướng con trỏ
+    -- Liquid glass: dispersive inner rim, edge highlight that follows the cursor
     local InnerRimFrame = New("Frame", {
         Position = UDim2.fromOffset(1, 1),
         Size = UDim2.new(1, -2, 1, -2),
@@ -200,7 +200,7 @@ function SlimeUI:CreateWindow(opts)
         end
     end)
 
-    -- Trang trí riêng của theme Slime (dựng lại mỗi khi đổi theme)
+    -- Slime theme decoration (rebuilt whenever the theme changes)
     local SlimeLayer
     Hook(function(T)
         if SlimeLayer then
@@ -220,7 +220,7 @@ function SlimeUI:CreateWindow(opts)
     })
 
     -----------------------------------------------------------------
-    -- Sidebar nổi
+    -- Floating sidebar
     -----------------------------------------------------------------
     local Sidebar = New("Frame", {
         Name = "Sidebar",
@@ -232,7 +232,7 @@ function SlimeUI:CreateWindow(opts)
     Bind(Sidebar, { BackgroundColor3 = "Sidebar", BackgroundTransparency = "SidebarT" })
     GlassEdge(Sidebar, 1)
 
-    -- Đèn giao thông
+    -- Traffic lights
     local lightGap = compact and 17 or 20
     local Lights = New("Frame", {
         Position = UDim2.fromOffset(compact and 9 or 16, 16),
@@ -281,7 +281,7 @@ function SlimeUI:CreateWindow(opts)
         end)
     end
 
-    -- Tên rút gọn hiện khi thu nhỏ
+    -- Compact title shown while minimized
     local MiniBrand = New("Frame", {
         Position = UDim2.fromOffset(16 + 13 + lightGap * 2 + 14, 9),
         Size = UDim2.new(1, -(16 + 13 + lightGap * 2 + 20), 0, 26),
@@ -306,7 +306,7 @@ function SlimeUI:CreateWindow(opts)
         Parent = Sidebar,
     })
 
-    -- Logo + tên
+    -- Logo + title
     local LogoHolder
     if compact then
         LogoHolder = New("Frame", {
@@ -353,7 +353,7 @@ function SlimeUI:CreateWindow(opts)
         Tween(Logo, 0.35, { Rotation = 0 }, Enum.EasingStyle.Back)
     end)
 
-    -- Ô tìm kiếm (sidebar khi thường, header khi gọn)
+    -- Search box (sidebar in regular layout, header in compact layout)
     local SearchFrame
     if compact then
         SearchFrame = New("Frame", {
@@ -402,7 +402,7 @@ function SlimeUI:CreateWindow(opts)
         Tween(SearchStroke, 0.25, { Transparency = 1 })
     end)
 
-    -- Danh sách tab
+    -- Tab list
     local listTop = compact and 84 or 126
     local footerH = compact and 54 or 62
     local TabList = New("ScrollingFrame", {
@@ -422,7 +422,7 @@ function SlimeUI:CreateWindow(opts)
     }, { Corner(11) })
     Bind(Indicator, { BackgroundColor3 = "Select" })
 
-    -- Hồ sơ người chơi
+    -- Player profile
     local Footer = New("Frame", {
         AnchorPoint = Vector2.new(0, 1),
         Position = UDim2.new(0, 6, 1, -6),
@@ -473,7 +473,7 @@ function SlimeUI:CreateWindow(opts)
     end)
 
     -----------------------------------------------------------------
-    -- Nội dung
+    -- Content
     -----------------------------------------------------------------
     local headerRight = compact and 186 or 20
     local Header = Bind(Label({
@@ -511,7 +511,7 @@ function SlimeUI:CreateWindow(opts)
     }, { List(10) })
 
     -----------------------------------------------------------------
-    -- Làm mờ thế giới phía sau
+    -- Blur the world behind
     -----------------------------------------------------------------
     local BlurFx
     local function BlurTo(on)
@@ -673,7 +673,7 @@ function SlimeUI:CreateWindow(opts)
     end
 
     -----------------------------------------------------------------
-    -- Hiện / ẩn / thu nhỏ / phóng to
+    -- Show / hide / minimize / zoom
     -----------------------------------------------------------------
     local Grip
 
@@ -695,7 +695,7 @@ function SlimeUI:CreateWindow(opts)
         return UDim2.fromOffset(s.X, Window.Minimized and 58 or s.Y)
     end
 
-    -- Giữ vị trí cửa sổ trong màn hình (vd. sau khi đổi độ phân giải lúc đang ẩn)
+    -- Keep the window on screen (e.g. after the resolution changes while hidden)
     local function ClampPos(pos)
         if not pos then
             return UDim2.fromScale(0.5, 0.5)
@@ -725,7 +725,7 @@ function SlimeUI:CreateWindow(opts)
     end
 
     -----------------------------------------------------------------
-    -- Thanh đảo kính ở giữa phía trên: UI thu gọn vào đây khi ẩn.
+    -- Glass island bar at the top center: the UI collapses into it when hidden.
     -----------------------------------------------------------------
     local IslandH = compact and 46 or 42
     local IslandW = math.clamp(#Window.Title * 8 + 96, 180, 300)
@@ -873,7 +873,7 @@ function SlimeUI:CreateWindow(opts)
         end)
     end
 
-    -- Kích thước khởi đầu khi cửa sổ bung ra từ thanh đảo
+    -- Starting size when the window expands out of the island
     local function IslandStartSize(s)
         local w, h = IslandH, IslandH
         if IslandParts and IslandParts.Root.Visible then
@@ -898,7 +898,7 @@ function SlimeUI:CreateWindow(opts)
             Holder.Visible = true
             local s = FitScale()
             if self._collapsed and useIsland then
-                -- Bung ra từ thanh đảo về vị trí cũ
+                -- Expand from the island back to the previous position
                 Scale.Scale = s
                 Holder.Position = IslandCenter()
                 Holder.Size = IslandStartSize(s)
@@ -938,7 +938,7 @@ function SlimeUI:CreateWindow(opts)
                 Grip.Visible = false
             end
             if useIsland then
-                -- Thu gọn vào thanh đảo ở giữa phía trên
+                -- Collapse into the island at the top center
                 if os.clock() >= (self._morphEnd or 0) then
                     self._restorePos = Holder.Position
                 end
@@ -1050,7 +1050,7 @@ function SlimeUI:CreateWindow(opts)
         Window:Zoom()
     end)
 
-    -- Kéo cửa sổ (chuột + cảm ứng)
+    -- Window dragging (mouse + touch)
     local dragging, dragStart, startPos = false, nil, nil
     local function StartDrag(input)
         if not IsClick(input) then
@@ -1083,8 +1083,8 @@ function SlimeUI:CreateWindow(opts)
         end
     end)
 
-    -- Tay kéo kiểu macOS 26: vòng cung ôm góc dưới phải (đổi kích thước)
-    -- và thanh ngang dưới cửa sổ (kéo để di chuyển)
+    -- macOS 26 style handles: an arc around the bottom-right corner (resize)
+    -- and a bar under the window (drag to move)
     local MinSize = compact and Vector2.new(420, 260) or Vector2.new(600, 380)
     Grip = New("Frame", {
         Name = "WindowHandles",
@@ -1217,7 +1217,7 @@ function SlimeUI:CreateWindow(opts)
         end)
     end
 
-    -- Phím ẩn/hiện
+    -- Toggle key
     Connect(UserInputService.InputBegan, function(input, gpe)
         if gpe or Window._binding then
             return
@@ -1267,7 +1267,7 @@ function SlimeUI:CreateWindow(opts)
         })
         local SScale = New("UIScale", { Scale = 0.85, Parent = Slide })
 
-        -- Lớp kính: nền trong suốt + ánh sáng trên + dải khúc xạ
+        -- Glass layer: translucent background + top sheen + refraction band
         local Group = New("CanvasGroup", {
             Size = UDim2.fromScale(1, 1),
             BackgroundColor3 = T.Window,
@@ -1379,7 +1379,7 @@ function SlimeUI:CreateWindow(opts)
             Parent = Slide,
         })
 
-        -- Hiệu ứng vào: trượt + nảy + dải sáng quét qua
+        -- Enter animation: slide + bounce + light sweep
         Tween(Wrap, 0.4, { Size = UDim2.new(1, 0, 0, H) })
         Tween(Slide, 0.65, { Position = UDim2.fromOffset(0, 0) }, Enum.EasingStyle.Quint)
         Tween(SScale, 0.7, { Scale = 1 }, Enum.EasingStyle.Back)
@@ -1459,7 +1459,7 @@ function SlimeUI:CreateWindow(opts)
         MoveIndicator(false)
     end
 
-    -- Tìm kiếm
+    -- Search
     local function ApplySearch()
         local q = string.lower(Trim(SearchInput.Text))
         local firstVisible
@@ -1981,7 +1981,7 @@ function SlimeUI:CreateWindow(opts)
             Tween(Btn, 0.2, { BackgroundTransparency = baseT })
         end)
         Connect(Btn.MouseButton1Click, function()
-            -- Nháy sáng khi bấm
+            -- Flash on click
             Btn.BackgroundTransparency = math.max(0, baseT - 0.15)
             Tween(Btn, 0.4, { BackgroundTransparency = baseT })
             if o.Callback then
@@ -1996,7 +1996,7 @@ function SlimeUI:CreateWindow(opts)
         }
     end
 
-    -- Chevron xoay được
+    -- Rotating chevron
     local function Chevron(parent, position)
         local holder = New("Frame", {
             AnchorPoint = Vector2.new(0.5, 0.5),
@@ -2271,7 +2271,7 @@ function SlimeUI:CreateWindow(opts)
                         api:Set(input.KeyCode)
                     end
                 elseif IsClick(input) then
-                    -- bấm chuột ra ngoài: huỷ chờ phím, giữ phím cũ
+                    -- clicked elsewhere: stop listening and keep the old key
                     listening = false
                     task.defer(function()
                         Window._binding = false
@@ -2419,7 +2419,7 @@ function SlimeUI:CreateWindow(opts)
         }
     end
 
-    -- Tên ngắn + tên kiểu Add...
+    -- Short names + Add... aliases
     local ElementNames = { "Toggle", "Slider", "Button", "Dropdown", "Segmented", "Keybind", "Input", "Label", "Paragraph" }
     SectionMethods.Textbox = SectionMethods.Input
     for _, n in ipairs(ElementNames) do
@@ -2624,7 +2624,7 @@ function SlimeUI:CreateWindow(opts)
     end
 
     -----------------------------------------------------------------
-    -- Nút nổi bật/tắt UI
+    -- Floating toggle button
     -----------------------------------------------------------------
     local ToggleBtn, ToggleBtnConn
     function Window:SetToggleButton(on)
@@ -2651,7 +2651,7 @@ function SlimeUI:CreateWindow(opts)
                 Parent = Btn,
             })
 
-            -- Nút tĩnh: chạm để bật/tắt UI, kéo để di chuyển
+            -- Static button: tap to toggle the UI, drag to move it
             local pressing, moved, startInput, startPos = false, false, nil, nil
             Btn.InputBegan:Connect(function(input)
                 if not IsClick(input) then
@@ -2700,7 +2700,7 @@ function SlimeUI:CreateWindow(opts)
     end
 
     -----------------------------------------------------------------
-    -- Tab Settings có sẵn
+    -- Built-in Settings tab
     -----------------------------------------------------------------
     local function BuildSettings()
         local S = CreateTab({
@@ -2823,7 +2823,7 @@ function SlimeUI:CreateWindow(opts)
     end
 
     -----------------------------------------------------------------
-    -- Splash khi khởi động
+    -- Startup splash
     -----------------------------------------------------------------
     local function PlaySplash(onDone)
         local T = Theme.Current
@@ -2932,7 +2932,7 @@ function SlimeUI:CreateWindow(opts)
     end
 
     -----------------------------------------------------------------
-    -- Huỷ
+    -- Destroy
     -----------------------------------------------------------------
     function Window:Destroy()
         if self.Destroyed then
@@ -2967,7 +2967,7 @@ function SlimeUI:CreateWindow(opts)
     end
 
     -----------------------------------------------------------------
-    -- Khởi động
+    -- Startup
     -----------------------------------------------------------------
     local wantButton = opts.ToggleButton
     if wantButton == nil then

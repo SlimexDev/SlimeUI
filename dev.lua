@@ -1,7 +1,5 @@
--- Chạy SlimeUI trực tiếp từ src/ mà không cần build (dùng khi phát triển).
 -- Run SlimeUI straight from src/ without building (for development).
 --
--- Chép cả thư mục repo vào workspace/SlimeUI của executor rồi chạy:
 -- Copy the repo folder into your executor's workspace/SlimeUI, then run:
 --     local SlimeUI = loadstring(readfile("SlimeUI/dev.lua"))("SlimeUI")
 local root = ... or "SlimeUI"

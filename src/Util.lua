@@ -121,7 +121,7 @@ local function GetGuiParent()
         return gethui()
     end)
     if ok and typeof(hui) == "Instance" then
-        -- Một số executor trả về ScreenGui (vd. CoreGui.RobloxGui): không lồng ScreenGui vào ScreenGui
+        -- Some executors return a ScreenGui (e.g. CoreGui.RobloxGui): never nest a ScreenGui inside a ScreenGui
         if hui:IsA("LayerCollector") then
             if hui.Parent then
                 return hui.Parent
@@ -175,8 +175,8 @@ local function EnsureFolder(path)
     end
 end
 
--- Tải file (vd. logo) về workspace nếu chưa có
--- Chỉ nhận dữ liệu ảnh thật (PNG/JPG), tránh ghi trang lỗi "404: Not Found" thành file ảnh
+-- Downloads a file (e.g. the logo) into the workspace when it is missing
+-- Only accept real image data (PNG/JPG) so a "404: Not Found" page is never saved as an image
 local function IsImageData(data)
     if type(data) ~= "string" or #data < 8 then
         return false
@@ -209,7 +209,7 @@ local function EnsureFile(path, url)
     end
 end
 
--- Ảnh: rbxassetid, tên icon Lucide, hoặc file trong workspace (qua getcustomasset)
+-- Images: rbxassetid, a Lucide icon name, or a workspace file (via getcustomasset)
 local function ResolveImage(src)
     if src == nil or src == "" then
         return nil
@@ -265,7 +265,7 @@ local function Trim(s)
     return s
 end
 
--- Viền kính tĩnh (không theo theme), dùng cho Key System và splash
+-- Static glass edge (not theme-bound), used by the key system and splash
 local function StaticEdge(parent, T, thickness)
     local s = Stroke(T.Edge, 0, thickness or 1)
     local mid = math.min(1, math.max(T.EdgeA, T.EdgeB) + 0.2)
@@ -278,7 +278,7 @@ local function StaticEdge(parent, T, thickness)
     return s
 end
 
--- Đối tượng rỗng: trả về khi người dùng đóng Key System, tránh lỗi ở các lệnh tiếp theo
+-- Empty object returned when the user closes the key system, so later calls do not error
 local Null
 Null = setmetatable({}, {
     __index = function()

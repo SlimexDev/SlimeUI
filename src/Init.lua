@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------
--- Init: hàm tiện ích cấp thư viện
+-- Init: library-level helpers
 ---------------------------------------------------------------------
 function SlimeUI:Notify(...)
     local w = env.__SlimeUIWindow
@@ -8,7 +8,7 @@ function SlimeUI:Notify(...)
     end
 end
 
--- Thêm theme riêng. Khoá nào thiếu sẽ lấy từ Glass.
+-- Adds a custom theme. Missing keys are taken from Glass.
 function SlimeUI:AddTheme(name, colors)
     local theme = table.clone(Themes.Glass)
     for k, v in pairs(colors or {}) do

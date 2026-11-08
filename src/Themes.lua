@@ -1,8 +1,8 @@
 ---------------------------------------------------------------------
--- Themes: mỗi theme là một bảng màu. Thêm theme riêng bằng SlimeUI:AddTheme
+-- Themes: each theme is a color table. Add your own with SlimeUI:AddTheme
 ---------------------------------------------------------------------
 
--- Tạo nhanh một theme kính có màu từ vài màu gốc
+-- Builds a tinted glass theme from a few base colors
 local function TintedGlass(o)
     local tint = o.Tint
     return {
@@ -28,7 +28,7 @@ local function TintedGlass(o)
 end
 
 local Themes = {
-    -- Kính lỏng trong suốt (mặc định)
+    -- Clear liquid glass (default)
     Glass = {
         Window = Color3.fromRGB(14, 16, 24), WindowT = 0.6,
         Sidebar = Color3.fromRGB(255, 255, 255), SidebarT = 0.93,
@@ -48,8 +48,8 @@ local Themes = {
         Accent = Color3.fromRGB(10, 132, 255),
     },
 
-    -- Slime: kính xanh lá -> xanh ngọc giống logo, có lớp slime ở mép trên,
-    -- giọt slime chảy xuống, bong bóng nổi lên và hiệu ứng nảy như thạch
+    -- Slime: green to cyan glass like the logo, a slime coat on the top edge,
+    -- dripping slime, rising bubbles and a jelly bounce
     Slime = TintedGlass({
         Window = Color3.fromRGB(4, 24, 22), WindowT = 0.34,
         Tint = Color3.fromRGB(150, 255, 205),
@@ -101,7 +101,7 @@ local Themes = {
         Accent = Color3.fromRGB(0, 122, 255),
     },
 
-    -- Đen tuyền cho màn OLED
+    -- Pure black for OLED screens
     Midnight = {
         Window = Color3.fromRGB(0, 0, 0), WindowT = 0.08,
         Sidebar = Color3.fromRGB(255, 255, 255), SidebarT = 0.95,

@@ -1,6 +1,5 @@
 name: Release
 
-# Tạo release khi push tag, ví dụ: git tag v1.0.0 && git push origin v1.0.0
 # Creates a release when you push a tag, e.g. git tag v1.0.0 && git push origin v1.0.0
 on:
   push:

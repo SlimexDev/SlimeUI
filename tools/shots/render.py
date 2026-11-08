@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 """
-Xuất ảnh minh hoạ cho docs từ tools/shots/shots.html bằng Google Chrome (headless).
 Render the docs illustrations from tools/shots/shots.html with headless Google Chrome.
 
-    python tools/shots/render.py            # tất cả / all shots
-    python tools/shots/render.py toggle     # một ảnh / one shot
+    python tools/shots/render.py            # all shots
+    python tools/shots/render.py toggle     # one shot
 
-Ảnh được lưu ở docs/assets/shots/<tên>.webp (cần Pillow để chuyển PNG -> WebP).
+Images are written to docs/assets/shots/<name>.webp (Pillow is used to convert PNG to WebP).
 """
 import os
 import pathlib

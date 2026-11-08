@@ -1,6 +1,6 @@
--- SlimeUI example · Ví dụ dùng SlimeUI
+-- SlimeUI example
 local SlimeUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/SlimexDev/SlimeUI/main/dist/SlimeUI.lua"))()
--- Thử trên máy trước khi push / test locally before pushing:
+-- To test a local copy instead:
 -- local SlimeUI = loadstring(readfile("SlimeUI/SlimeUI.lua"))()
 
 local Window = SlimeUI:CreateWindow({
@@ -78,7 +78,7 @@ Home:Button({
 })
 
 ---------------------------------------------------------------------
--- Components (cách viết ngắn / short syntax)
+-- Components (short syntax)
 ---------------------------------------------------------------------
 local Comp = Window:Tab("Components", "layers", "Every element, short syntax")
 

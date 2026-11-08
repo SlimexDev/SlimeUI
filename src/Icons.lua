@@ -142,7 +142,7 @@ local IconIds = {
 }
 SlimeUI.Icons = IconIds
 
--- Tên mới của Lucide -> tên trong bộ icon
+-- Newer Lucide names -> names in this icon set
 local IconAliases = {
     ["circle-check"] = "check-circle",
     ["circle-x"] = "x-circle",

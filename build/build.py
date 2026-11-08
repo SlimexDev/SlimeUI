@@ -2,8 +2,8 @@
 """
 Build SlimeUI
 
-Nối các file trong src/ theo thứ tự ở src/order.txt thành một file duy nhất
-dist/SlimeUI.lua để người dùng có thể loadstring.
+Joins the files in src/ (in the order listed in src/order.txt) into a single
+file, dist/SlimeUI.lua, that users can load with loadstring.
 
     python build/build.py
 """

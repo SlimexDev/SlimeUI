@@ -1,10 +1,10 @@
 ---------------------------------------------------------------------
--- Core: bảng thư viện, dịch vụ Roblox, hằng số dùng chung
+-- Core: library table, Roblox services, shared constants
 ---------------------------------------------------------------------
 local SlimeUI = {
     Version = "1.0.0",
     Author = "SlimexDev",
-    -- Đổi 2 dòng dưới nếu repo GitHub của bạn có tên khác
+    -- Change the two lines below if your GitHub repository has a different name
     Repository = "https://github.com/SlimexDev/SlimeUI",
     AssetsUrl = "https://raw.githubusercontent.com/SlimexDev/SlimeUI/main/assets/",
     Folder = "SlimeUI",

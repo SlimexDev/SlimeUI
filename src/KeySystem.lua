@@ -34,7 +34,7 @@ function SlimeUI:KeySystem(o)
         return false, "That key isn't valid. Get a new key and try again."
     end
 
-    -- Key đã lưu từ lần trước
+    -- Key saved from a previous session
     if o.SaveKey ~= false and typeof(isfile) == "function" and typeof(readfile) == "function" then
         local ok, saved = pcall(function()
             return isfile(file) and readfile(file) or nil
@@ -93,7 +93,7 @@ function SlimeUI:KeySystem(o)
         SlimeDecor(Card, T, { Drips = { 0.1, 0.19, 0.82, 0.91 }, Blobs = 10, Bubbles = 7 })
     end
 
-    -- Logo (đứng yên)
+    -- Logo (static)
     local LogoHolder = New("Frame", {
         AnchorPoint = Vector2.new(0.5, 0),
         Position = UDim2.new(0.5, 0, 0, 24),
@@ -357,7 +357,7 @@ function SlimeUI:KeySystem(o)
         close(false)
     end)
 
-    -- Hiệu ứng mở
+    -- Open animation
     Tween(Dim, 0.4, { BackgroundTransparency = 0.6 })
     Tween(Scale, 0.6, { Scale = fit }, Enum.EasingStyle.Back)
     Tween(Card, 0.35, { GroupTransparency = 0 })

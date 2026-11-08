@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------
--- Theme engine: mọi thuộc tính màu được đăng ký để đổi theme lúc chạy
+-- Theme engine: every color property is registered so themes can change at runtime
 ---------------------------------------------------------------------
 local Theme = { Name = "Glass", Current = Themes.Glass, Objects = {}, Hooks = {}, AccentOverride = nil }
 
@@ -52,7 +52,7 @@ local function GlassEdge(parent, thickness)
     return s, g
 end
 
--- Màu tán sắc nhẹ ở viền trong (hiệu ứng kính lỏng)
+-- Subtle dispersion colors for the inner rim (liquid glass effect)
 local function DispersionColors()
     return ColorSequence.new({
         ColorSequenceKeypoint.new(0, Color3.fromRGB(185, 232, 255)),
@@ -65,8 +65,8 @@ local function RimSequence(T)
     return NumberSequence.new({ NSK(0, T.Rim), NSK(0.35, 1), NSK(0.65, 1), NSK(1, math.min(1, T.Rim + 0.2)) })
 end
 
--- Màu nhấn dạng chuyển màu: theme có Accent2 (ví dụ Slime) dùng Accent -> Accent2.
--- Trả về màu nền cần đặt cho đối tượng; grad là UIGradient con của đối tượng đó.
+-- Gradient accent: themes with Accent2 (for example Slime) use Accent -> Accent2.
+-- Returns the background color to use; grad is a UIGradient child of that object.
 local function AccentColor(T, grad)
     if T.Accent2 then
         grad.Color = ColorSequence.new(T.Accent, T.Accent2)
@@ -77,9 +77,9 @@ local function AccentColor(T, grad)
     return T.Accent
 end
 
--- Trang trí riêng cho theme Slime: ánh màu chuyển giống logo, lớp slime gợn sóng
--- ở mép trên có giọt chảy xuống, và bong bóng bóng loáng nổi lên.
--- Trả về Frame để có thể huỷ khi đổi theme.
+-- Slime theme decoration: logo-colored gradient tint, a wavy slime coat
+-- on the top edge with dripping slime, and glossy rising bubbles.
+-- Returns the Frame so it can be destroyed when the theme changes.
 local function SlimeDecor(parent, T, o)
     o = o or {}
     local c1, c2 = T.Accent, T.Accent2 or T.Accent
@@ -91,7 +91,7 @@ local function SlimeDecor(parent, T, o)
         Parent = parent,
     })
 
-    -- Ánh màu chuyển xanh lá -> xanh ngọc
+    -- Green to cyan gradient tint
     New("Frame", {
         Size = UDim2.fromScale(1, 1),
         BackgroundColor3 = WHITE,
@@ -106,7 +106,7 @@ local function SlimeDecor(parent, T, o)
         }),
     })
 
-    -- Lớp slime gợn sóng ở mép trên
+    -- Wavy slime coat on the top edge
     local count = o.Blobs or 16
     for i = 0, count do
         local h = math.random(20, 32)
@@ -124,7 +124,7 @@ local function SlimeDecor(parent, T, o)
         })
     end
 
-    -- Giọt slime chảy xuống, thỉnh thoảng rơi một giọt nhỏ
+    -- Slime drips that stretch and now and then drop a droplet
     for i, x in ipairs(o.Drips or { 0.62, 0.74, 0.87, 0.95 }) do
         local w = 9 + (i % 2) * 5
         local base = 18 + (i % 3) * 6
@@ -171,7 +171,7 @@ local function SlimeDecor(parent, T, o)
         end)
     end
 
-    -- Bong bóng bóng loáng nổi lên
+    -- Glossy rising bubbles
     local bubbles = {}
     for i = 1, o.Bubbles or 10 do
         local size = math.random(8, 20)

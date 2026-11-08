@@ -1,6 +1,6 @@
 --[[
     SlimeUI v{{VERSION}}
-    Liquid Glass UI library for Roblox, inspired by macOS
+    UI library for Roblox scripts
 
     Author:  SlimexDev
     Source:  {{REPOSITORY}}  (src/ folder)

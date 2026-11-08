@@ -14,8 +14,8 @@
         root.classList.add("lang-" + lang);
         root.lang = lang;
         document.title = lang === "vi"
-            ? "SlimeUI · Thư viện UI kính lỏng cho Roblox"
-            : "SlimeUI · Liquid Glass UI library for Roblox";
+            ? "SlimeUI · Thư viện UI cho script Roblox"
+            : "SlimeUI · UI library for Roblox scripts";
         document.querySelectorAll(".lang-switch button").forEach(function (b) {
             b.classList.toggle("on", b.dataset.lang === lang);
             b.setAttribute("aria-pressed", b.dataset.lang === lang ? "true" : "false");
@@ -96,10 +96,10 @@
 
     // ---------- Theme gallery ----------
     var THEMES = [
-        { name: "Glass", window: "14, 16, 24", alpha: 0.4, tint: "255, 255, 255", accent: "#0a84ff", text: "#ffffff", sub: "#ced2de", vi: "Kính trong suốt", en: "Clear liquid glass" },
+        { name: "Glass", window: "14, 16, 24", alpha: 0.4, tint: "255, 255, 255", accent: "#0a84ff", text: "#ffffff", sub: "#ced2de", vi: "Kính trong suốt", en: "Clear glass" },
         { name: "Slime", window: "6, 30, 16", alpha: 0.6, tint: "160, 255, 175", accent: "#58dc48", text: "#f0fff3", sub: "#a8e4b6", vi: "Bong bóng + giọt slime", en: "Bubbles + slime drips", slime: true },
         { name: "Dark", window: "28, 28, 32", alpha: 0.95, tint: "255, 255, 255", accent: "#0a84ff", text: "#f5f5f7", sub: "#98989f", vi: "Tối, gần như đặc", en: "Solid dark" },
-        { name: "Light", window: "242, 242, 246", alpha: 0.95, tint: "0, 0, 0", accent: "#007aff", text: "#1d1d1f", sub: "#6e6e73", vi: "Sáng kiểu macOS", en: "Bright macOS look" },
+        { name: "Light", window: "242, 242, 246", alpha: 0.95, tint: "0, 0, 0", accent: "#007aff", text: "#1d1d1f", sub: "#6e6e73", vi: "Nền sáng", en: "Bright theme" },
         { name: "Midnight", window: "0, 0, 0", alpha: 0.92, tint: "255, 255, 255", accent: "#64d2ff", text: "#ebebf0", sub: "#82828c", vi: "Đen tuyền cho OLED", en: "Pure black for OLED" },
         { name: "Ocean", window: "6, 22, 40", alpha: 0.55, tint: "165, 215, 255", accent: "#38bdf8", text: "#f0f8ff", sub: "#a5c8e8", vi: "Kính xanh biển", en: "Blue glass" },
         { name: "Sakura", window: "40, 14, 28", alpha: 0.55, tint: "255, 195, 220", accent: "#ff69a0", text: "#fff4f8", sub: "#f0b9d0", vi: "Kính hồng anh đào", en: "Cherry blossom pink" },

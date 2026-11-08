@@ -2809,7 +2809,7 @@ function SlimeUI:CreateWindow(opts)
         local About = S:Section("About")
         About:Paragraph({
             Title = Window.Title .. "  v" .. SlimeUI.Version,
-            Content = "UI library by " .. SlimeUI.Author .. ". Liquid Glass design inspired by macOS 27.",
+            Content = "UI library for Roblox scripts by " .. SlimeUI.Author .. ".",
         })
         About:Button({
             Name = "Unload UI",

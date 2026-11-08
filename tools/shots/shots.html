@@ -1,0 +1,427 @@
+<!doctype html>
+<!--
+    Ảnh minh hoạ cho tài liệu SlimeUI. Mỗi <section class="shot"> là một ảnh.
+    Xuất ảnh: python tools/shots/render.py   (cần Google Chrome)
+    Feature illustrations for the SlimeUI docs. Each <section class="shot"> becomes one image.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+    --text: #f2fff9; --sub: #9ee6cd; --a1: #40de78; --a2: #00c2e8;
+    --tint: 150, 255, 205; --win: rgba(4, 24, 22, .68);
+    --grad: linear-gradient(90deg, var(--a1), var(--a2));
+}
+* { box-sizing: border-box; margin: 0; }
+html, body { width: 760px; height: 420px; overflow: hidden; background: #2f3338; }
+body { font: 13px/1.35 "Inter", "Segoe UI", system-ui, sans-serif; color: var(--text); -webkit-font-smoothing: antialiased; }
+.shot { display: none; }
+.shot.on { display: block; }
+
+/* scene: baseplate + soft lights so the glass reads */
+.scene {
+    position: relative; width: 760px; height: 420px; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    background:
+        radial-gradient(circle at 14% 18%, rgba(255, 190, 70, .55), transparent 36%),
+        radial-gradient(circle at 88% 22%, rgba(60, 170, 255, .5), transparent 40%),
+        radial-gradient(circle at 70% 96%, rgba(255, 80, 170, .42), transparent 42%),
+        radial-gradient(circle at 25% 92%, rgba(64, 222, 120, .4), transparent 40%),
+        repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 2px, transparent 2px 30px),
+        repeating-linear-gradient(90deg, rgba(0,0,0,.18) 0 2px, transparent 2px 30px),
+        #4a4f57;
+}
+.wm {
+    position: absolute; right: 14px; bottom: 12px; z-index: 50;
+    display: flex; align-items: center; gap: 7px; padding: 5px 11px 5px 6px; border-radius: 99px;
+    background: rgba(4, 20, 18, .55); box-shadow: inset 0 0 0 1px rgba(255,255,255,.18);
+    font-weight: 700; font-size: 12px; letter-spacing: .01em;
+}
+.wm img { width: 22px; height: 22px; }
+
+/* glass */
+.glass {
+    position: relative; overflow: hidden; border-radius: 22px;
+    background: linear-gradient(135deg, rgba(64,222,120,.20), rgba(0,194,232,.10) 55%, rgba(0,194,232,.22)), var(--win);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.55), inset 0 0 0 1.2px rgba(200,255,230,.28), inset 0 -1px 0 rgba(255,255,255,.12);
+}
+.glass::before { content: ""; position: absolute; inset: 0 0 60% 0; background: linear-gradient(180deg, rgba(255,255,255,.12), transparent); pointer-events: none; }
+.goo { position: absolute; left: 0; right: 0; top: 0; height: 0; z-index: 3; pointer-events: none; }
+.goo i { position: absolute; top: -12px; height: 24px; border-radius: 50%; background: linear-gradient(180deg, #a5f3c4, var(--c, var(--a1))); }
+.drip { position: absolute; top: -4px; width: 11px; border-radius: 0 0 99px 99px; background: linear-gradient(180deg, var(--c, var(--a1)), #8ff0d8); z-index: 3; }
+.drip::after { content: ""; position: absolute; left: 2px; bottom: 4px; width: 3px; height: 6px; border-radius: 9px; background: rgba(255,255,255,.7); }
+.bub { position: absolute; border-radius: 50%; background: rgba(64, 222, 160, .2); box-shadow: inset 0 0 0 1px rgba(255,255,255,.45); z-index: 1; }
+.bub::after { content: ""; position: absolute; left: 20%; top: 16%; width: 30%; height: 30%; border-radius: 50%; background: rgba(255,255,255,.75); }
+
+.card { position: relative; z-index: 2; border-radius: 15px; background: rgba(var(--tint), .07); box-shadow: inset 0 0 0 1px rgba(var(--tint), .16); }
+.sect { color: var(--sub); font-weight: 600; font-size: 12px; margin: 0 0 6px 6px; position: relative; z-index: 2; }
+.row { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 11px 16px; min-height: 46px; }
+.row + .row { border-top: 1px solid rgba(var(--tint), .14); }
+.row .l { display: flex; align-items: center; gap: 12px; }
+.row b { font-weight: 500; font-size: 13.5px; display: block; }
+.row small { color: var(--sub); font-size: 11.5px; }
+.ico { width: 18px; height: 18px; color: var(--sub); flex: none; }
+
+.switch { width: 46px; height: 26px; border-radius: 99px; position: relative; background: rgba(var(--tint), .22); flex: none; }
+.switch.on { background: var(--grad); }
+.switch::after { content: ""; position: absolute; top: 2px; left: 2px; width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.25); }
+.switch.on::after { left: 22px; }
+.slider { display: flex; align-items: center; gap: 12px; }
+.track { width: 170px; height: 5px; border-radius: 99px; background: rgba(var(--tint), .22); position: relative; }
+.fill { position: absolute; inset: 0 auto 0 0; border-radius: 99px; background: var(--grad); }
+.fill::after { content: ""; position: absolute; right: -10px; top: -8px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.3); }
+.val { min-width: 56px; text-align: center; padding: 5px 8px; border-radius: 8px; background: rgba(var(--tint), .12); font-weight: 500; font-size: 12.5px; }
+.btn { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 15px; border-radius: 99px; font-weight: 600; font-size: 12.5px; background: rgba(var(--tint), .14); }
+.btn.primary { background: var(--grad); color: #fff; }
+.btn.danger { background: #ff453a; color: #fff; }
+.btn svg { width: 14px; height: 14px; }
+.field { display: flex; align-items: center; justify-content: space-between; width: 172px; height: 30px; padding: 0 10px 0 12px; border-radius: 9px; background: rgba(var(--tint), .12); font-weight: 500; font-size: 12.5px; }
+.field.focus { box-shadow: 0 0 0 2px rgba(64, 222, 120, .6); }
+.field .ph { color: var(--sub); font-weight: 400; }
+.field svg { width: 14px; height: 14px; color: var(--sub); }
+.menu { position: absolute; z-index: 10; width: 196px; padding: 6px; border-radius: 14px; background: rgba(6, 34, 32, .93); box-shadow: inset 0 1px 0 rgba(255,255,255,.4), inset 0 0 0 1px rgba(200,255,230,.25), 0 14px 30px rgba(0,0,0,.35); }
+.menu div { display: flex; align-items: center; gap: 10px; height: 30px; padding: 0 9px; border-radius: 8px; font-size: 13px; }
+.menu div.hl { background: var(--grad); }
+.menu svg { width: 14px; height: 14px; }
+.menu .sp { width: 14px; }
+.seg { display: flex; padding: 2px; border-radius: 10px; background: rgba(var(--tint), .12); }
+.seg span { padding: 6px 14px; border-radius: 8px; font-weight: 500; font-size: 12.5px; }
+.seg span.on { background: rgba(var(--tint), .32); font-weight: 600; box-shadow: 0 0 0 .6px rgba(0,0,0,.15); }
+.kbd { min-width: 70px; text-align: center; padding: 6px 12px; border-radius: 9px; background: rgba(var(--tint), .12); font-weight: 600; font-size: 12.5px; }
+.kbd.listen { box-shadow: 0 0 0 2px rgba(64, 222, 120, .7); color: var(--sub); }
+
+/* window */
+.win { width: 640px; height: 340px; display: grid; grid-template-columns: 182px 1fr; gap: 14px; padding: 8px; }
+.side { position: relative; z-index: 2; border-radius: 15px; padding: 14px 10px; background: rgba(var(--tint), .08); box-shadow: inset 0 0 0 1px rgba(255,255,255,.16); display: flex; flex-direction: column; }
+.lights { display: flex; gap: 7px; margin: 2px 0 14px 4px; }
+.lights i { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; }
+.lights i:nth-child(2) { background: #febc2e; } .lights i:nth-child(3) { background: #28c840; }
+.brand { display: flex; align-items: center; gap: 9px; margin: 0 0 12px 4px; }
+.brand img { width: 30px; height: 30px; }
+.brand b { display: block; font-size: 14px; } .brand small { color: var(--sub); font-size: 11px; }
+.search { display: flex; align-items: center; gap: 8px; height: 30px; padding: 0 10px; border-radius: 9px; background: rgba(var(--tint), .12); color: var(--sub); margin-bottom: 10px; }
+.search svg { width: 13px; height: 13px; }
+.tab { display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 7px; border-radius: 10px; font-weight: 500; margin-bottom: 2px; }
+.tab.on { background: rgba(var(--tint), .18); font-weight: 600; }
+.tab .ti { width: 24px; height: 24px; border-radius: 7px; display: grid; place-items: center; background: linear-gradient(180deg, rgba(255,255,255,.35), rgba(0,0,0,.12)), var(--c); }
+.tab .ti svg { width: 14px; height: 14px; color: #fff; }
+.prof { margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 10px 4px 0; border-top: 1px solid rgba(var(--tint), .14); }
+.prof .av { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #f7c873, #e3864b); }
+.prof b { display: block; font-size: 12.5px; } .prof small { color: var(--sub); font-size: 11px; }
+.content { position: relative; z-index: 2; padding: 8px 6px 0 0; }
+.content h2 { font-size: 24px; font-weight: 700; } .content p.s { color: var(--sub); font-size: 12px; margin: 2px 0 12px; }
+.arc { position: absolute; width: 34px; height: 34px; border-right: 3.5px solid rgba(242,255,249,.6); border-bottom: 3.5px solid rgba(242,255,249,.6); border-radius: 0 0 30px 0; }
+.movebar { position: absolute; height: 5px; border-radius: 99px; background: rgba(242,255,249,.55); }
+
+/* notifications */
+.notifs { position: absolute; right: 26px; top: 24px; width: 340px; display: flex; flex-direction: column; gap: 10px; }
+.notif { display: grid; grid-template-columns: 42px 1fr auto; gap: 12px; align-items: start; padding: 16px 16px 18px 14px; border-radius: 22px; position: relative; }
+.notif .ni { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: linear-gradient(180deg, rgba(255,255,255,.35), rgba(0,0,0,.1)), var(--c); box-shadow: inset 0 0 0 1px rgba(255,255,255,.4); }
+.notif .ni svg { width: 20px; height: 20px; color: #fff; }
+.notif b { display: block; font-size: 13.5px; } .notif span { font-size: 12.5px; opacity: .9; }
+.notif time { color: var(--sub); font-size: 11.5px; }
+.notif .bar { position: absolute; left: 22px; bottom: 7px; height: 2px; border-radius: 9px; background: var(--c); }
+
+/* island + toggle button */
+.island { position: absolute; left: 50%; top: 12px; transform: translateX(-50%); display: flex; align-items: center; gap: 10px; width: 210px; height: 44px; padding: 0 14px 0 9px; border-radius: 99px; }
+.island img { width: 26px; height: 26px; }
+.island b { flex: 1; font-size: 14px; }
+.island svg { width: 14px; height: 14px; color: var(--sub); }
+.fab { position: absolute; width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center; background: rgba(18, 20, 28, .8); box-shadow: inset 0 1px 0 rgba(255,255,255,.5), inset 0 0 0 1.2px rgba(255,255,255,.25); }
+.fab img { width: 32px; height: 32px; }
+
+/* key system */
+.key { width: 360px; height: 330px; padding: 24px 22px; text-align: center; }
+.key .klogo { width: 60px; height: 60px; margin: 6px auto 10px; display: block; position: relative; z-index: 2; }
+.key h3 { font-size: 21px; position: relative; z-index: 2; } .key p { color: var(--sub); font-size: 12.5px; margin: 3px 0 14px; position: relative; z-index: 2; }
+.kinput { position: relative; z-index: 2; display: flex; align-items: center; gap: 10px; height: 42px; padding: 0 14px; border-radius: 12px; background: rgba(var(--tint), .12); color: var(--sub); text-align: left; }
+.kinput svg { width: 17px; height: 17px; }
+.kbtns { position: relative; z-index: 2; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 24px; }
+.kbtns span { display: flex; align-items: center; justify-content: center; gap: 7px; height: 42px; border-radius: 12px; font-weight: 600; background: rgba(var(--tint), .14); }
+.kbtns span.p { background: var(--grad); }
+.kbtns svg { width: 15px; height: 15px; }
+.key .foot { position: relative; z-index: 2; color: var(--sub); font-size: 11.5px; margin-top: 18px; opacity: .8; }
+.kclose { position: absolute; right: 14px; top: 14px; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: rgba(var(--tint), .14); z-index: 4; }
+.kclose svg { width: 13px; height: 13px; color: var(--sub); }
+
+/* themes grid */
+.tgrid { display: grid; grid-template-columns: repeat(3, 200px); gap: 14px 16px; }
+.mini { height: 104px; border-radius: 14px; padding: 6px; display: grid; grid-template-columns: 34% 1fr; gap: 6px; position: relative; overflow: hidden; box-shadow: inset 0 1px 0 rgba(255,255,255,.45), inset 0 0 0 1px rgba(255,255,255,.2); }
+.mini .ms { border-radius: 9px; background: rgba(var(--t), .14); padding: 6px; }
+.mini .ms i { display: block; height: 6px; border-radius: 3px; background: rgba(var(--t), .3); margin-bottom: 5px; }
+.mini .ms i:first-child { width: 60%; }
+.mini .mc { padding: 4px 2px; }
+.mini .mc b { display: block; font-size: 12.5px; margin-bottom: 6px; }
+.mini .mrow { display: flex; justify-content: space-between; align-items: center; height: 18px; padding: 0 6px; border-radius: 5px; background: rgba(var(--t), .1); margin-bottom: 4px; }
+.mini .mrow i { width: 40%; height: 4px; border-radius: 3px; background: rgba(var(--t), .35); }
+.mini .msw { width: 20px; height: 11px; border-radius: 9px; background: var(--acc); }
+
+/* phone */
+.phone { width: 600px; height: 300px; border-radius: 40px; padding: 14px; background: #0c0f12; box-shadow: inset 0 0 0 2px #2b3036, 0 20px 40px rgba(0,0,0,.35); }
+.screen { position: relative; width: 100%; height: 100%; border-radius: 28px; overflow: hidden; display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(circle at 20% 20%, rgba(255,190,70,.5), transparent 40%), radial-gradient(circle at 90% 80%, rgba(60,170,255,.45), transparent 45%), repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 2px, transparent 2px 24px), repeating-linear-gradient(90deg, rgba(0,0,0,.18) 0 2px, transparent 2px 24px), #4a4f57; }
+.cwin { width: 520px; height: 240px; display: grid; grid-template-columns: 58px 1fr; gap: 10px; padding: 7px; border-radius: 20px; }
+.rail { position: relative; z-index: 2; border-radius: 14px; background: rgba(var(--tint), .08); box-shadow: inset 0 0 0 1px rgba(255,255,255,.16); display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 10px 0; }
+.rail .lights { gap: 4px; margin: 0 0 4px; } .rail .lights i { width: 9px; height: 9px; }
+.rail img { width: 28px; height: 28px; }
+.rail .ti { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; background: linear-gradient(180deg, rgba(255,255,255,.35), rgba(0,0,0,.12)), var(--c); }
+.rail .ti.on { box-shadow: 0 0 0 4px rgba(var(--tint), .18); }
+.rail .ti svg { width: 16px; height: 16px; color: #fff; }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></symbol>
+    <symbol id="i-palette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 3a9 9 0 1 0 0 18c1.5 0 2-1 2-2s-1-1.5-1-2.5S14 15 15 15h2a4 4 0 0 0 4-4c0-4.4-4-8-9-8z"/><circle cx="7.5" cy="11" r="1.2" fill="currentColor"/><circle cx="10" cy="7" r="1.2" fill="currentColor"/><circle cx="15" cy="7.5" r="1.2" fill="currentColor"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 9a6 6 0 1 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9z"/><path d="M10 20a2 2 0 0 0 4 0"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="8" cy="15" r="4"/><path d="m11 12 9-9M17 6l3 3M14.5 8.5l2 2"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-flame" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3s5 4.5 5 10a5 5 0 0 1-10 0c0-2.5 1.5-4 1.5-4S9 12 11 12c0-4 1-9 1-9z"/></symbol>
+    <symbol id="i-run" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="14" cy="4.5" r="1.8"/><path d="m6 21 3-6 4 2v5M9 15l2-6 4 3 3-1M11 9 8 10l-2 3"/></symbol>
+    <symbol id="i-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M5 3h11l3 3v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M8 3v5h7V3M8 21v-7h8v7"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></symbol>
+    <symbol id="i-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/></symbol>
+    <symbol id="i-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 3 3 5-6"/></symbol>
+    <symbol id="i-kb" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="2.5" y="6" width="19" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+  </defs>
+</svg>
+
+<!-- ====================== window ====================== -->
+<section class="shot" id="window"><div class="scene">
+  <div style="position:relative;transform:translate(-36px,-10px)">
+    <div class="glass win">
+      <div class="goo"><i style="left:-4%;width:60px"></i><i style="left:8%;width:70px;top:-14px"></i><i style="left:20%;width:56px"></i><i style="left:31%;width:74px;top:-15px;--c:#2bd6a0"></i><i style="left:45%;width:60px;--c:#1dcfb5"></i><i style="left:56%;width:72px;top:-14px;--c:#12c9c6"></i><i style="left:69%;width:58px;--c:#06c4d8"></i><i style="left:80%;width:70px;top:-15px;--c:#00c2e8"></i><i style="left:92%;width:60px;--c:#00c2e8"></i></div>
+      <div class="drip" style="left:63%;height:30px;--c:#16cbc0"></div><div class="drip" style="left:75%;height:20px;width:14px;--c:#0ac6d2"></div><div class="drip" style="left:88%;height:36px;--c:#02c2e2"></div>
+      <span class="bub" style="left:40%;top:72%;width:16px;height:16px"></span><span class="bub" style="left:58%;top:52%;width:10px;height:10px"></span><span class="bub" style="left:86%;top:80%;width:18px;height:18px"></span><span class="bub" style="left:72%;top:66%;width:8px;height:8px"></span>
+      <aside class="side">
+        <div class="lights"><i></i><i></i><i></i></div>
+        <div class="brand"><img src="../../docs/assets/logo.png" alt=""><div><b>SlimeUI</b><small>by SlimexDev</small></div></div>
+        <div class="search"><svg><use href="#i-search"/></svg>Search</div>
+        <div class="tab on"><span class="ti" style="--c:#0a84ff"><svg><use href="#i-home"/></svg></span>Home</div>
+        <div class="tab"><span class="ti" style="--c:#bf5af2"><svg><use href="#i-layers"/></svg></span>Components</div>
+        <div class="tab"><span class="ti" style="--c:#ff375f"><svg><use href="#i-palette"/></svg></span>Themes</div>
+        <div class="tab"><span class="ti" style="--c:#8e8e93"><svg><use href="#i-gear"/></svg></span>Settings</div>
+        <div class="prof"><span class="av"></span><div><b>SlimexDev</b><small>@slimexdev</small></div></div>
+      </aside>
+      <div class="content">
+        <h2>Home</h2><p class="s">Quick toggles and camera</p>
+        <div class="sect">Player</div>
+        <div class="card">
+          <div class="row"><div class="l"><svg class="ico"><use href="#i-flame"/></svg><div><b>Auto farm</b><small>Collects resources for you</small></div></div><span class="switch on"></span></div>
+          <div class="row"><div class="l"><svg class="ico"><use href="#i-run"/></svg><b>Walk speed</b></div><div class="slider"><div class="track" style="width:120px"><div class="fill" style="width:58%"></div></div><span class="val">60</span></div></div>
+          <div class="row"><div class="l"><svg class="ico"><use href="#i-eye"/></svg><b>Mode</b></div><span class="field" style="width:130px">Legit<svg><use href="#i-chev"/></svg></span></div>
+        </div>
+      </div>
+    </div>
+    <span class="arc" style="right:-9px;bottom:-9px"></span>
+    <span class="movebar" style="left:37%;width:26%;bottom:-15px"></span>
+  </div>
+  <div class="wm"><img src="../../docs/assets/logo.png" alt="">SlimeUI</div>
+</div></section>
+
+<!-- ====================== toggle ====================== -->
+<section class="shot" id="toggle"><div class="scene">
+  <div class="glass" style="width:520px;padding:22px 20px">
+    <div class="sect">Toggle</div>
+    <div class="card">
+      <div class="row"><div class="l"><svg class="ico"><use href="#i-flame"/></svg><div><b>Auto farm</b><small>Collects resources for you</small></div></div><span class="switch on"></span></div>
+      <div class="row"><div class="l"><svg class="ico"><use href="#i-eye"/></svg><b>Show FPS counter</b></div><span class="switch"></span></div>
+      <div class="row"><div class="l"><svg class="ico"><use href="#i-run"/></svg><b>Reduce motion</b></div><span class="switch on"></span></div>
+    </div>
+  </div>
+  <div class="wm"><img src="../../docs/assets/logo.png" alt="">SlimeUI</div>
+</div></section>
+
+<!-- ====================== slider ====================== -->
+<section class="shot" id="slider"><div class="scene">
+  <div class="glass" style="width:560px;padding:22px 20px">
+    <div class="sect">Slider</div>
+    <div class="card">
+      <div class="row"><div class="l"><svg class="ico"><use href="#i-run"/></svg><b>Walk speed</b></div><div class="slider"><div class="track"><div class="fill" style="width:44%"></div></div><span class="val">60</span></div></div>
+      <div class="row"><div class="l"><svg class="ico"><use href="#i-eye"/></svg><b>Field of view</b></div><div class="slider"><div class="track"><div class="fill" style="width:62%"></div></div><span class="val">90°</span></div></div>
+      <div class="row"><div class="l"><svg class="ico"><use href="#i-gear"/></svg><b>UI scale</b></div><div class="slider"><div class="track"><div class="fill" style="width:57%"></div></div><span class="val">100%</span></div></div>
+    </div>
+  </div>
+  <div class="wm"><img src="../../docs/assets/logo.png" alt="">SlimeUI</div>
+</div></section>
+
+<!-- ====================== button ====================== -->
+<section class="shot" id="button"><div class="scene">
+  <div class="glass" style="width:520px;padding:22px 20px">
+    <div class="sect">Button</div>
+    <div class="card">
+      <div class="row"><b>Teleport to spawn</b><span class="btn">Run</span></div>
+      <div class="row"><div><b>Save config</b><small>Primary style with an icon</small></div><span class="btn primary"><svg><use href="#i-save"/></svg>Save</span></div>
+      <div class="row"><div><b>Continue</b><small>Buttons bounce when pressed</small></div><span class="btn primary">Continue<svg><use href="#i-arrow"/></svg></span></div>
+      <div class="row"><b>Unload UI</b><span class="btn danger">Unload</span></div>
+    </div>
+  </div>
+  <div class="wm"><img src="../../docs/assets/logo.png" alt="">SlimeUI</div>
+</div></section>
+
+<!-- ====================== dropdown ====================== -->
+<section class="shot" id="dropdown"><div class="scene">
+  <div class="glass" style="width:520px;padding:22px 20px;overflow:visible">
+    <div class="sect">Dropdown</div>
+    <div class="card">
+      <div class="row"><b>Mode</b><span class="field">Legit<svg><use href="#i-chev"/></svg></span></div>
+      <div class="row"><div><b>Targets</b><small>Multi-select</small></div><span class="field">Head, Torso<svg style="transform:rotate(180deg)"><use href="#i-chev"/></svg></span></div>
+    </div>
+  </div>
+  <div class="menu" style="left:407px;top:266px">
+    <div><svg><use href="#i-check"/></svg>Head</div>
+    <div class="hl"><svg><use href="#i-check"/></svg>Torso</div>
+    <div><span class="sp"></span>Arms</div>
+    <div><span class="sp"></span>Legs</div>
+  </div>
+  <div class="wm"><img src="../../docs/assets/logo.png" alt="">SlimeUI</div>
+</div></section>
+
+<!-- ====================== segmented ====================== -->
+<section class="shot" id="segmented"><div class="scene">
+  <div class="glass" style="width:520px;padding:22px 20px">
+    <div class="sect">Segmented</div>
+    <div class="card">
+      <div class="row"><b>Speed</b><div class="seg"><span>Slow</span><span class="on">Normal</span><span>Fast</span></div></div>
+      <div class="row"><b>Appearance</b><div class="seg"><span>Auto</span><span>Light</span><span class="on">Dark</span></div></div>
+      <div class="row"><b>Aim part</b><div class="seg"><span class="on">Head</span><span>Body</span></div></div>
+    </div>
+  </div>
+  <div class="wm"><img src="../../docs/assets/logo.png" alt="">SlimeUI</div>
+</div></section>
+
+<!-- ====================== keybind ====================== -->
+<section class="shot" id="keybind"><div class="scene">
+  <div class="glass" style="width:520px;padding:22px 20px">
+    <div class="sect">Keybind</div>
+    <div class="card">
+      <div class="row"><div class="l"><svg class="ico"><use href="#i-kb"/></svg><b>Toggle UI</b></div><span class="kbd">RightShift</span></div>
+      <div class="row"><div class="l"><svg class="ico"><use href="#i-run"/></svg><b>Dash</b></div><span class="kbd">Q</span></div>
+      <div class="row"><div class="l"><svg class="ico"><use href="#i-flame"/></svg><div><b>Quick action</b><small>Click, then press a key</small></div></div><span class="kbd listen">Press a key...</span></div>
+    </div>
+  </div>
+  <div class="wm"><img src="../../docs/assets/logo.png" alt="">SlimeUI</div>
+</div></section>
+
+<!-- ====================== input ====================== -->
+<section class="shot" id="input"><div class="scene">
+  <div class="glass" style="width:520px;padding:22px 20px">
+    <div class="sect">Input</div>
+    <div class="card">
+      <div class="row"><div class="l"><svg class="ico"><use href="#i-user"/></svg><b>Player name</b></div><span class="field focus">SlimexDev|</span></div>
+      <div class="row"><b>Amount</b><span class="field">10</span></div>
+      <div class="row"><b>Nickname</b><span class="field"><span class="ph">Type and press Enter</span></span></div>
+    </div>
+  </div>
+  <div class="wm"><img src="../../docs/assets/logo.png" alt="">SlimeUI</div>
+</div></section>
+
+<!-- ====================== text ====================== -->
+<section class="shot" id="text"><div class="scene">
+  <div class="glass" style="width:520px;padding:22px 20px">
+    <div class="sect">Label &amp; Paragraph</div>
+    <div class="card">
+      <div class="row" style="min-height:38px"><small style="font-size:12.5px">Press RightShift to show or hide the window.</small></div>
+      <div class="row" style="display:block;padding:14px 16px 16px"><b style="font-weight:600;margin-bottom:5px">About this hub</b><small style="font-size:12.5px;line-height:1.5;display:block">Paragraphs wrap onto several lines inside the card, which is handy for notes, changelogs and instructions for your users.</small></div>
+    </div>
+  </div>
+  <div class="wm"><img src="../../docs/assets/logo.png" alt="">SlimeUI</div>
+</div></section>
+
+<!-- ====================== notifications ====================== -->
+<section class="shot" id="notifications"><div class="scene">
+  <div class="notifs">
+    <div class="glass notif" style="--c:#30d158"><span class="ni"><svg><use href="#i-ok"/></svg></span><div><b>Config saved</b><span>Your settings were saved as main.</span></div><time>now</time><span class="bar" style="width:70%"></span></div>
+    <div class="glass notif" style="--c:#ff9f0a"><span class="ni"><svg><use href="#i-warn"/></svg></span><div><b>Warning</b><span>Something needs your attention.</span></div><time>now</time><span class="bar" style="width:45%"></span></div>
+    <div class="glass notif" style="--c:#0a84ff"><span class="ni"><svg><use href="#i-info"/></svg></span><div><b>SlimeUI</b><span>Press RightShift to hide or show the window.</span></div><time>now</time><span class="bar" style="width:20%"></span></div>
+  </div>
+  <div class="wm"><img src="../../docs/assets/logo.png" alt="">SlimeUI</div>
+</div></section>
+
+<!-- ====================== key system ====================== -->
+<section class="shot" id="keysystem"><div class="scene">
+  <div class="glass key">
+    <div class="goo"><i style="left:-6%;width:70px"></i><i style="left:12%;width:64px;top:-14px;--c:#2bd6a0"></i><i style="left:62%;width:66px;--c:#0ac6d2"></i><i style="left:82%;width:72px;top:-14px;--c:#00c2e8"></i></div>
+    <div class="drip" style="left:9%;height:28px"></div><div class="drip" style="left:19%;height:18px;width:13px;--c:#2bd6a0"></div><div class="drip" style="left:84%;height:30px;--c:#04c3de"></div>
+    <span class="bub" style="left:12%;top:70%;width:14px;height:14px"></span><span class="bub" style="left:86%;top:58%;width:10px;height:10px"></span>
+    <span class="kclose"><svg><use href="#i-x"/></svg></span>
+    <img class="klogo" src="../../docs/assets/logo.png" alt="">
+    <h3>SlimeUI</h3>
+    <p>Enter your key to continue</p>
+    <div class="kinput"><svg><use href="#i-key"/></svg>Paste your key here</div>
+    <div class="kbtns"><span><svg><use href="#i-link"/></svg>Get Key</span><span class="p"><svg><use href="#i-check"/></svg>Verify</span></div>
+    <div class="foot">SlimeUI · by SlimexDev</div>
+  </div>
+  <div class="wm"><img src="../../docs/assets/logo.png" alt="">SlimeUI</div>
+</div></section>
+
+<!-- ====================== themes ====================== -->
+<section class="shot" id="themes"><div class="scene">
+  <div class="tgrid">
+    <div class="mini" style="--t:255,255,255;--acc:#0a84ff;background:rgba(14,16,24,.42)"><div class="ms"><i></i><i></i><i></i></div><div class="mc"><b>Glass</b><div class="mrow"><i></i><span class="msw"></span></div><div class="mrow"><i></i><span class="msw"></span></div></div></div>
+    <div class="mini" style="--t:150,255,205;--acc:linear-gradient(90deg,#40de78,#00c2e8);background:linear-gradient(135deg,rgba(64,222,120,.25),rgba(0,194,232,.2)),rgba(4,24,22,.66)"><div class="ms"><i></i><i></i><i></i></div><div class="mc"><b>Slime</b><div class="mrow"><i></i><span class="msw"></span></div><div class="mrow"><i></i><span class="msw"></span></div></div></div>
+    <div class="mini" style="--t:255,255,255;--acc:#0a84ff;background:rgba(28,28,32,.96)"><div class="ms"><i></i><i></i><i></i></div><div class="mc"><b>Dark</b><div class="mrow"><i></i><span class="msw"></span></div><div class="mrow"><i></i><span class="msw"></span></div></div></div>
+    <div class="mini" style="--t:0,0,0;--acc:#007aff;background:rgba(242,242,246,.96);color:#1d1d1f"><div class="ms"><i></i><i></i><i></i></div><div class="mc"><b>Light</b><div class="mrow"><i></i><span class="msw"></span></div><div class="mrow"><i></i><span class="msw"></span></div></div></div>
+    <div class="mini" style="--t:255,255,255;--acc:#64d2ff;background:rgba(0,0,0,.93)"><div class="ms"><i></i><i></i><i></i></div><div class="mc"><b>Midnight</b><div class="mrow"><i></i><span class="msw"></span></div><div class="mrow"><i></i><span class="msw"></span></div></div></div>
+    <div class="mini" style="--t:165,215,255;--acc:#38bdf8;background:rgba(6,22,40,.6)"><div class="ms"><i></i><i></i><i></i></div><div class="mc"><b>Ocean</b><div class="mrow"><i></i><span class="msw"></span></div><div class="mrow"><i></i><span class="msw"></span></div></div></div>
+    <div class="mini" style="--t:255,195,220;--acc:#ff69a0;background:rgba(40,14,28,.6)"><div class="ms"><i></i><i></i><i></i></div><div class="mc"><b>Sakura</b><div class="mrow"><i></i><span class="msw"></span></div><div class="mrow"><i></i><span class="msw"></span></div></div></div>
+    <div class="mini" style="--t:212,192,255;--acc:#a778ff;background:rgba(22,14,42,.6)"><div class="ms"><i></i><i></i><i></i></div><div class="mc"><b>Amethyst</b><div class="mrow"><i></i><span class="msw"></span></div><div class="mrow"><i></i><span class="msw"></span></div></div></div>
+    <div class="mini" style="--t:255,212,172;--acc:#ff8c32;background:rgba(40,20,10,.6)"><div class="ms"><i></i><i></i><i></i></div><div class="mc"><b>Sunset</b><div class="mrow"><i></i><span class="msw"></span></div><div class="mrow"><i></i><span class="msw"></span></div></div></div>
+  </div>
+  <div class="wm"><img src="../../docs/assets/logo.png" alt="">SlimeUI</div>
+</div></section>
+
+<!-- ====================== island ====================== -->
+<section class="shot" id="island"><div class="scene">
+  <div class="glass island"><img src="../../docs/assets/logo.png" alt=""><b>SlimeUI</b><svg><use href="#i-chev"/></svg></div>
+  <div class="fab" style="left:34px;top:183px"><img src="../../docs/assets/logo.png" alt=""></div>
+  <div style="position:absolute;left:50%;top:78px;transform:translateX(-50%);text-align:center;color:#fff;font-weight:600;font-size:13px;opacity:.85">Click the bar to open the window again</div>
+  <div style="position:absolute;left:100px;top:198px;color:#fff;font-weight:600;font-size:13px;opacity:.85">Floating toggle button (drag anywhere)</div>
+  <div class="wm"><img src="../../docs/assets/logo.png" alt="">SlimeUI</div>
+</div></section>
+
+<!-- ====================== mobile ====================== -->
+<section class="shot" id="mobile"><div class="scene">
+  <div class="phone"><div class="screen">
+    <div class="glass cwin">
+      <aside class="rail">
+        <div class="lights"><i></i><i></i><i></i></div>
+        <img src="../../docs/assets/logo.png" alt="">
+        <span class="ti on" style="--c:#0a84ff"><svg><use href="#i-home"/></svg></span>
+        <span class="ti" style="--c:#bf5af2"><svg><use href="#i-layers"/></svg></span>
+        <span class="ti" style="--c:#ff9f0a"><svg><use href="#i-bell"/></svg></span>
+        <span class="ti" style="--c:#8e8e93"><svg><use href="#i-gear"/></svg></span>
+      </aside>
+      <div class="content" style="padding-top:4px">
+        <div style="display:flex;justify-content:space-between;align-items:center"><h2 style="font-size:20px">Home</h2><span class="search" style="width:130px;margin:0"><svg><use href="#i-search"/></svg>Search</span></div>
+        <p class="s">Compact layout for phones</p>
+        <div class="card">
+          <div class="row" style="min-height:48px"><b>Auto farm</b><span class="switch on"></span></div>
+          <div class="row" style="min-height:48px"><b>Walk speed</b><div class="slider"><div class="track" style="width:110px"><div class="fill" style="width:50%"></div></div><span class="val">60</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div></div>
+  <div class="wm"><img src="../../docs/assets/logo.png" alt="">SlimeUI</div>
+</div></section>
+
+<script>
+    var id = new URLSearchParams(location.search).get("shot") || "window";
+    var el = document.getElementById(id);
+    if (el) el.classList.add("on");
+</script>
+</body>
+</html>

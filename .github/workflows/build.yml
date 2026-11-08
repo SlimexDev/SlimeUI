@@ -1,0 +1,20 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build dist/SlimeUI.lua
+        run: python build/build.py
+      - name: Check dist is up to date
+        run: |
+          git diff --exit-code dist/ || (echo "::error::dist/SlimeUI.lua is out of date. Run 'python build/build.py' and commit the result." && exit 1)

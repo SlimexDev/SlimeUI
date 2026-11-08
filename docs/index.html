@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="en" class="lang-en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SlimeUI · Liquid Glass UI library for Roblox</title>
+<meta name="description" content="SlimeUI is a Liquid Glass UI library for Roblox scripts, inspired by macOS. SlimeUI là thư viện UI kính lỏng cho Roblox.">
+<meta property="og:title" content="SlimeUI">
+<meta property="og:description" content="Liquid Glass UI library for Roblox · Thư viện UI kính lỏng cho Roblox">
+<meta property="og:image" content="assets/og.png">
+<meta name="theme-color" content="#060a08">
+<link rel="icon" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="topbar">
+    <button class="icon-btn menu-btn" type="button" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    <a class="brand" href="#top"><img src="assets/logo.png" alt="">SlimeUI <span class="badge">v1.0.0</span></a>
+    <div class="spacer"></div>
+    <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" data-lang="vi">VI</button>
+        <button type="button" data-lang="en">EN</button>
+    </div>
+    <a class="icon-btn" href="https://github.com/SlimexDev/SlimeUI" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.1c-3.3.7-4-1.6-4-1.6-.5-1.4-1.3-1.8-1.3-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.7 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5Z"/></svg>
+        <span class="gh-text">GitHub</span>
+    </a>
+</header>
+
+<div class="layout" id="top">
+<nav class="sidenav" aria-label="Docs">
+    <h6><span class="vi">Bắt đầu</span><span class="en">Getting started</span></h6>
+    <a href="#install"><span class="vi">Cài đặt</span><span class="en">Installation</span></a>
+    <a href="#quick-start"><span class="vi">Bắt đầu nhanh</span><span class="en">Quick start</span></a>
+    <h6><span class="vi">Cửa sổ</span><span class="en">Window</span></h6>
+    <a href="#window"><span class="vi">Tuỳ chọn cửa sổ</span><span class="en">Window options</span></a>
+    <a href="#window-methods"><span class="vi">Hàm của Window</span><span class="en">Window methods</span></a>
+    <a href="#tabs"><span class="vi">Tab và Section</span><span class="en">Tabs and sections</span></a>
+    <h6>Elements</h6>
+    <a href="#toggle">Toggle</a>
+    <a href="#slider">Slider</a>
+    <a href="#button">Button</a>
+    <a href="#dropdown">Dropdown</a>
+    <a href="#segmented">Segmented</a>
+    <a href="#keybind">Keybind</a>
+    <a href="#input">Input</a>
+    <a href="#text">Label &amp; Paragraph</a>
+    <h6><span class="vi">Tính năng</span><span class="en">Features</span></h6>
+    <a href="#notifications"><span class="vi">Thông báo</span><span class="en">Notifications</span></a>
+    <a href="#key-system">Key System</a>
+    <a href="#themes">Themes</a>
+    <a href="#custom-themes"><span class="vi">Tự tạo theme</span><span class="en">Custom themes</span></a>
+    <a href="#flags"><span class="vi">Flag và config</span><span class="en">Flags and configs</span></a>
+    <a href="#icons">Icons</a>
+    <a href="#mobile"><span class="vi">Điện thoại</span><span class="en">Mobile</span></a>
+    <h6><span class="vi">Dự án</span><span class="en">Project</span></h6>
+    <a href="#build"><span class="vi">Build từ source</span><span class="en">Build from source</span></a>
+    <a href="#credits"><span class="vi">Giấy phép</span><span class="en">License &amp; credits</span></a>
+</nav>
+
+<main class="content">
+
+<!-- ================= HERO ================= -->
+<div class="hero">
+    <div>
+        <h1>SlimeUI</h1>
+        <p class="lead">
+            <span class="vi">Thư viện UI kính lỏng cho script Roblox, lấy cảm hứng từ macOS. Dễ dùng, có 9 theme, 818 icon, Key System và chạy tốt trên điện thoại.</span>
+            <span class="en">A Liquid Glass UI library for Roblox scripts, inspired by macOS. Simple API, 9 themes, 818 icons, a built-in key system and a mobile layout.</span>
+        </p>
+        <div class="actions">
+            <a class="btn btn-primary" href="#install"><span class="vi">Bắt đầu</span><span class="en">Get started</span></a>
+            <a class="btn btn-ghost" href="#themes"><span class="vi">Xem theme</span><span class="en">Browse themes</span></a>
+        </div>
+        <pre><code class="lua">local SlimeUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/SlimexDev/SlimeUI/main/dist/SlimeUI.lua"))()</code></pre>
+    </div>
+    <div class="scene" aria-label="SlimeUI preview">
+        <div class="mock" id="mock">
+            <div class="mk-bubbles" aria-hidden="true"></div>
+            <aside class="mk-side">
+                <div class="mk-lights"><i></i><i></i><i></i></div>
+                <div class="mk-brand"><img src="assets/logo.png" alt=""><div><b>SlimeUI</b><small>by SlimexDev</small></div></div>
+                <div class="mk-search">Search</div>
+                <div class="mk-tab on"><span class="ic" style="--c:#0a84ff"></span>Home</div>
+                <div class="mk-tab"><span class="ic" style="--c:#bf5af2"></span>Components</div>
+                <div class="mk-tab"><span class="ic" style="--c:#ff375f"></span>Themes</div>
+                <div class="mk-tab"><span class="ic" style="--c:#8e8e93"></span>Settings</div>
+            </aside>
+            <div class="mk-main">
+                <h4>Home</h4>
+                <p>Quick toggles and camera</p>
+                <div class="mk-label">Player</div>
+                <div class="mk-card">
+                    <div class="mk-row">Auto farm <span class="mk-switch"></span></div>
+                    <div class="mk-row">Walk speed <span class="mk-slider"><i></i></span></div>
+                    <div class="mk-row">Mode <span class="mk-drop">Legit</span></div>
+                </div>
+                <div class="mk-label">Theme: <span id="theme-code">Slime</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="grid-cards">
+    <div class="card"><h4><span class="vi">Kính lỏng</span><span class="en">Liquid Glass</span></h4><p><span class="vi">Cửa sổ trong suốt, viền phản quang xoay theo con trỏ.</span><span class="en">Translucent windows with edges that catch the light from your cursor.</span></p></div>
+    <div class="card"><h4><span class="vi">9 theme + Slime</span><span class="en">9 themes + Slime</span></h4><p><span class="vi">Theme Slime có bong bóng, giọt slime và hiệu ứng nảy như thạch.</span><span class="en">The Slime theme adds bubbles, drips and jelly-bounce animations.</span></p></div>
+    <div class="card"><h4><span class="vi">Dễ dùng</span><span class="en">Easy to use</span></h4><p><span class="vi">Mỗi element viết một dòng, hoặc dùng bảng khi cần thêm tuỳ chọn.</span><span class="en">One line per element, or a table when you need more options.</span></p></div>
+    <div class="card"><h4><span class="vi">Cho điện thoại</span><span class="en">Mobile ready</span></h4><p><span class="vi">Bố cục gọn, nút nổi để bật/tắt, chạm và kéo đều mượt.</span><span class="en">Compact layout, floating toggle button and smooth touch input.</span></p></div>
+</div>
+
+<!-- ================= INSTALL ================= -->
+<section class="doc" id="install">
+    <h2><span class="vi">Cài đặt</span><span class="en">Installation</span><a class="anchor" href="#install">#</a></h2>
+    <div class="vi"><p>Chạy dòng sau trong executor để tải bản mới nhất từ GitHub:</p></div>
+    <div class="en"><p>Run this line in your executor to load the latest version from GitHub:</p></div>
+    <pre><code class="lua">local SlimeUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/SlimexDev/SlimeUI/main/dist/SlimeUI.lua"))()</code></pre>
+    <div class="vi"><p>Hoặc dùng bản phát hành (release) mới nhất:</p></div>
+    <div class="en"><p>Or load the latest release:</p></div>
+    <pre><code class="lua">local SlimeUI = loadstring(game:HttpGet("https://github.com/SlimexDev/SlimeUI/releases/latest/download/SlimeUI.lua"))()</code></pre>
+    <div class="callout">
+        <p class="vi"><b>Yêu cầu executor:</b> <code>loadstring</code>, <code>game:HttpGet</code>. Để hiện logo cần <code>getcustomasset</code>, <code>isfile</code>, <code>writefile</code>. Lưu key và config cần <code>writefile</code>, <code>makefolder</code>. Nút Get Key cần <code>setclipboard</code>. Thiếu hàm nào thì phần đó tự bỏ qua, UI vẫn chạy.</p>
+        <p class="en"><b>Executor requirements:</b> <code>loadstring</code> and <code>game:HttpGet</code>. The logo needs <code>getcustomasset</code>, <code>isfile</code> and <code>writefile</code>. Saving keys and configs needs <code>writefile</code> and <code>makefolder</code>. The Get Key button needs <code>setclipboard</code>. Anything missing is skipped and the UI keeps working.</p>
+    </div>
+</section>
+
+<!-- ================= QUICK START ================= -->
+<section class="doc" id="quick-start">
+    <h2><span class="vi">Bắt đầu nhanh</span><span class="en">Quick start</span><a class="anchor" href="#quick-start">#</a></h2>
+    <div class="vi"><p>Tạo cửa sổ, thêm tab, rồi thêm element vào tab. Element gọi trên tab sẽ vào section mới nhất.</p></div>
+    <div class="en"><p>Create a window, add a tab, then add elements to it. Elements added to a tab go into its latest section.</p></div>
+<pre><code class="lua">local SlimeUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/SlimexDev/SlimeUI/main/dist/SlimeUI.lua"))()
+
+local Window = SlimeUI:CreateWindow({
+    Title = "My Hub",
+    Subtitle = "by Me",
+    Theme = "Slime",
+})
+
+local Main = Window:Tab("Main", "home", "Everyday features")
+
+Main:Section("Player")
+Main:Toggle("Auto farm", false, function(on)
+    print("Auto farm:", on)
+end)
+Main:Slider("Walk speed", 16, 100, 16, function(value)
+    print("Speed:", value)
+end)
+Main:Button("Say hi", function()
+    Window:Notify("Hi", "Hello from SlimeUI", 3)
+end)</code></pre>
+    <div class="vi"><p>Bấm <code>RightShift</code> để ẩn hoặc hiện cửa sổ. Khi ẩn, cửa sổ thu gọn thành một thanh kính ở giữa phía trên màn hình, bấm vào để mở lại.</p></div>
+    <div class="en"><p>Press <code>RightShift</code> to hide or show the window. When hidden, it collapses into a glass bar at the top of the screen; click it to open the window again.</p></div>
+    <figure class="shot"><img src="assets/shots/window.webp" width="1520" height="840" loading="lazy" alt="A SlimeUI window with the Slime theme. Drag the corner arc to resize and the bar underneath to move it."><figcaption><span class="vi">Cửa sổ SlimeUI với theme Slime. Kéo vòng cung ở góc để đổi kích thước, kéo thanh ngang bên dưới để di chuyển.</span><span class="en">A SlimeUI window with the Slime theme. Drag the corner arc to resize and the bar underneath to move it.</span></figcaption></figure>
+    <figure class="shot"><img src="assets/shots/island.webp" width="1520" height="840" loading="lazy" alt="When hidden, the window collapses into a glass bar at the top. The floating button toggles it quickly."><figcaption><span class="vi">Khi ẩn, cửa sổ thu gọn thành thanh kính ở giữa phía trên. Nút tròn nổi dùng để bật/tắt nhanh.</span><span class="en">When hidden, the window collapses into a glass bar at the top. The floating button toggles it quickly.</span></figcaption></figure>
+</section>
+
+<!-- ================= WINDOW ================= -->
+<section class="doc" id="window">
+    <h2><span class="vi">Tuỳ chọn cửa sổ</span><span class="en">Window options</span><a class="anchor" href="#window">#</a></h2>
+<pre><code class="lua">local Window = SlimeUI:CreateWindow({
+    Title = "SlimeUI",
+    Subtitle = "by SlimexDev",
+    Theme = "Glass",
+    Accent = "Blue",
+    ToggleKey = Enum.KeyCode.RightShift,
+    ToggleButton = true,
+    Island = true,
+    Resizable = true,
+    Size = Vector2.new(780, 500),
+})</code></pre>
+    <div class="table-wrap"><table>
+        <thead><tr><th><span class="vi">Tuỳ chọn</span><span class="en">Option</span></th><th><span class="vi">Mặc định</span><span class="en">Default</span></th><th><span class="vi">Mô tả</span><span class="en">Description</span></th></tr></thead>
+        <tbody>
+        <tr><td><code>Title</code></td><td><code>"SlimeUI"</code></td><td><span class="vi">Tên hiển thị ở sidebar, thanh trên và thông báo.</span><span class="en">Name shown in the sidebar, top bar and notifications.</span></td></tr>
+        <tr><td><code>Subtitle</code></td><td><code>"by SlimexDev"</code></td><td><span class="vi">Dòng nhỏ dưới tên.</span><span class="en">Small line under the title.</span></td></tr>
+        <tr><td><code>Theme</code></td><td><code>"Glass"</code></td><td><span class="vi">Tên theme, xem phần <a href="#themes">Themes</a>.</span><span class="en">Theme name, see <a href="#themes">Themes</a>.</span></td></tr>
+        <tr><td><code>Accent</code></td><td><span class="vi">màu của theme</span><span class="en">theme color</span></td><td><span class="vi">Màu nhấn: <code>"Blue"</code>, <code>"Slime"</code>, <code>"Purple"</code>, <code>"Pink"</code>, <code>"Orange"</code>, <code>"Green"</code>, <code>"Teal"</code>, <code>"Red"</code>, <code>"Graphite"</code> hoặc một <code>Color3</code>.</span><span class="en">Accent color: <code>"Blue"</code>, <code>"Slime"</code>, <code>"Purple"</code>, <code>"Pink"</code>, <code>"Orange"</code>, <code>"Green"</code>, <code>"Teal"</code>, <code>"Red"</code>, <code>"Graphite"</code> or any <code>Color3</code>.</span></td></tr>
+        <tr><td><code>Logo</code></td><td><code>"SlimeUI/logo.png"</code></td><td><span class="vi">File trong workspace, <code>rbxassetid://...</code> hoặc tên icon.</span><span class="en">A workspace file, <code>rbxassetid://...</code> or an icon name.</span></td></tr>
+        <tr><td><code>LogoUrl</code></td><td><span class="vi">logo trên GitHub</span><span class="en">GitHub logo</span></td><td><span class="vi">Link tải logo khi file chưa có trên máy.</span><span class="en">Where to download the logo when the file is missing.</span></td></tr>
+        <tr><td><code>Folder</code></td><td><code>"SlimeUI"</code></td><td><span class="vi">Thư mục lưu key, config và logo.</span><span class="en">Folder for the key, configs and logo.</span></td></tr>
+        <tr><td><code>Size</code></td><td><code>Vector2.new(780, 500)</code></td><td><span class="vi">Kích thước ban đầu.</span><span class="en">Starting size.</span></td></tr>
+        <tr><td><code>ToggleKey</code></td><td><code>RightShift</code></td><td><span class="vi">Phím ẩn/hiện UI. Nhận <code>Enum.KeyCode</code> hoặc tên phím.</span><span class="en">Key that hides or shows the UI. Takes an <code>Enum.KeyCode</code> or a key name.</span></td></tr>
+        <tr><td><code>ToggleButton</code></td><td><code>true</code></td><td><span class="vi">Nút tròn nổi để bật/tắt UI, kéo thả được.</span><span class="en">Draggable round button that toggles the UI.</span></td></tr>
+        <tr><td><code>Island</code></td><td><code>true</code></td><td><span class="vi">Khi ẩn, UI thu gọn thành thanh kính ở giữa phía trên.</span><span class="en">When hidden, the UI collapses into a glass bar at the top.</span></td></tr>
+        <tr><td><code>Resizable</code></td><td><code>true</code></td><td><span class="vi">Kéo vòng cung ở góc (hoặc bất kỳ góc nào) để đổi kích thước. Thanh ngang dưới cửa sổ luôn dùng để di chuyển.</span><span class="en">Drag the corner arc (or any corner) to resize. The bar under the window always moves it.</span></td></tr>
+        <tr><td><code>Blur</code></td><td><code>false</code></td><td><span class="vi">Làm mờ thế giới game phía sau khi UI mở.</span><span class="en">Blur the game world while the UI is open.</span></td></tr>
+        <tr><td><code>Compact</code></td><td><span class="vi">tự động</span><span class="en">auto</span></td><td><span class="vi">Bố cục gọn cho điện thoại. Tự bật trên màn hình nhỏ hoặc thiết bị cảm ứng.</span><span class="en">Compact phone layout. Turns on automatically on small or touch screens.</span></td></tr>
+        <tr><td><code>Loader</code></td><td><code>true</code></td><td><span class="vi">Màn hình khởi động có logo.</span><span class="en">Splash screen with the logo.</span></td></tr>
+        <tr><td><code>SettingsTab</code></td><td><code>true</code></td><td><span class="vi">Thêm tab Settings (theme, màu nhấn, phím tắt, config).</span><span class="en">Adds a Settings tab (theme, accent, shortcut, configs).</span></td></tr>
+        <tr><td><code>KeySystem</code></td><td><code>nil</code></td><td><span class="vi">Bật hệ thống key, xem <a href="#key-system">Key System</a>.</span><span class="en">Turns on the key system, see <a href="#key-system">Key System</a>.</span></td></tr>
+        </tbody>
+    </table></div>
+</section>
+
+<section class="doc" id="window-methods">
+    <h2><span class="vi">Hàm của Window</span><span class="en">Window methods</span><a class="anchor" href="#window-methods">#</a></h2>
+    <div class="table-wrap"><table>
+        <thead><tr><th><span class="vi">Hàm</span><span class="en">Method</span></th><th><span class="vi">Tác dụng</span><span class="en">What it does</span></th></tr></thead>
+        <tbody>
+        <tr><td><code>Window:Tab(name, icon, description)</code></td><td><span class="vi">Tạo tab mới (cũng nhận một bảng).</span><span class="en">Creates a tab (also accepts a table).</span></td></tr>
+        <tr><td><code>Window:SelectTab(tab or name)</code></td><td><span class="vi">Chuyển sang tab.</span><span class="en">Switches to a tab.</span></td></tr>
+        <tr><td><code>Window:Notify(...)</code></td><td><span class="vi">Hiện thông báo, xem <a href="#notifications">Thông báo</a>.</span><span class="en">Shows a notification, see <a href="#notifications">Notifications</a>.</span></td></tr>
+        <tr><td><code>Window:Toggle()</code></td><td><span class="vi">Ẩn hoặc hiện UI.</span><span class="en">Hides or shows the UI.</span></td></tr>
+        <tr><td><code>Window:SetVisible(bool)</code></td><td><span class="vi">Ẩn hoặc hiện UI theo giá trị.</span><span class="en">Hides or shows the UI explicitly.</span></td></tr>
+        <tr><td><code>Window:Minimize([bool])</code></td><td><span class="vi">Thu gọn còn thanh tiêu đề (nút vàng).</span><span class="en">Shrinks to the title bar (yellow button).</span></td></tr>
+        <tr><td><code>Window:Zoom([bool])</code></td><td><span class="vi">Phóng to (nút xanh).</span><span class="en">Enlarges the window (green button).</span></td></tr>
+        <tr><td><code>Window:SetTheme(name)</code></td><td><span class="vi">Đổi theme ngay lập tức.</span><span class="en">Changes the theme instantly.</span></td></tr>
+        <tr><td><code>Window:SetAccent(name or Color3)</code></td><td><span class="vi">Đổi màu nhấn. Truyền <code>"Theme"</code> để về màu của theme.</span><span class="en">Changes the accent. Pass <code>"Theme"</code> to go back to the theme color.</span></td></tr>
+        <tr><td><code>Window:SetBlur(bool)</code></td><td><span class="vi">Bật/tắt làm mờ nền game.</span><span class="en">Turns background blur on or off.</span></td></tr>
+        <tr><td><code>Window:SetScale(number)</code></td><td><span class="vi">Cỡ UI, ví dụ <code>0.9</code>.</span><span class="en">UI scale, for example <code>0.9</code>.</span></td></tr>
+        <tr><td><code>Window:SetToggleButton(bool)</code></td><td><span class="vi">Hiện/ẩn nút nổi.</span><span class="en">Shows or hides the floating button.</span></td></tr>
+        <tr><td><code>Window:SaveConfig(name)</code></td><td><span class="vi">Lưu giá trị các element có Flag.</span><span class="en">Saves every element that has a Flag.</span></td></tr>
+        <tr><td><code>Window:LoadConfig(name)</code></td><td><span class="vi">Tải lại config đã lưu.</span><span class="en">Loads a saved config.</span></td></tr>
+        <tr><td><code>Window:Destroy()</code></td><td><span class="vi">Gỡ toàn bộ UI.</span><span class="en">Removes the whole UI.</span></td></tr>
+        </tbody>
+    </table></div>
+</section>
+
+<!-- ================= TABS ================= -->
+<section class="doc" id="tabs">
+    <h2><span class="vi">Tab và Section</span><span class="en">Tabs and sections</span><a class="anchor" href="#tabs">#</a></h2>
+    <div class="vi"><p>Tham số thứ hai là tên icon (xem <a href="#icons">Icons</a>), tham số thứ ba là mô tả hiện dưới tiêu đề.</p></div>
+    <div class="en"><p>The second argument is an icon name (see <a href="#icons">Icons</a>); the third is a description shown under the title.</p></div>
+<pre><code class="lua">local Combat = Window:Tab("Combat", "swords", "Aim and targets")
+
+-- or with a table
+local Combat = Window:Tab({
+    Name = "Combat",
+    Icon = "swords",
+    Description = "Aim and targets",
+    Color = Color3.fromRGB(255, 55, 95),
+})
+
+Combat:Section("Aim")                      -- next elements go here
+Combat:Toggle("Enabled", false, function(on) end)
+
+local Targets = Combat:Section("Targets")  -- keep a section to add to it later
+Targets:Dropdown("Part", { "Head", "Torso" }, "Head", function(v) end)</code></pre>
+</section>
+
+<!-- ================= ELEMENTS ================= -->
+<section class="doc" id="toggle">
+    <h2>Toggle<a class="anchor" href="#toggle">#</a></h2>
+    <figure class="shot"><img src="assets/shots/toggle.webp" width="1520" height="840" loading="lazy" alt="Toggles with icons and descriptions."><figcaption><span class="vi">Toggle bật/tắt, có icon và dòng mô tả.</span><span class="en">Toggles with icons and descriptions.</span></figcaption></figure>
+    <div class="vi"><p>Mọi element đều nhận <b>cách viết ngắn</b> hoặc <b>một bảng</b>. Trong bảng có thể thêm <code>Description</code> (dòng phụ), <code>Icon</code> (icon bên trái) và <code>Flag</code> (để lưu config).</p></div>
+    <div class="en"><p>Every element accepts a <b>short form</b> or <b>a table</b>. Tables also take <code>Description</code> (second line), <code>Icon</code> (left icon) and <code>Flag</code> (for configs).</p></div>
+<pre><code class="lua">local toggle = Tab:Toggle("Auto farm", false, function(on) end)
+
+Tab:Toggle({
+    Name = "Auto farm",
+    Description = "Collects resources for you",
+    Icon = "flame",
+    Default = false,
+    Flag = "AutoFarm",
+    Callback = function(on) end,
+})
+
+toggle:Set(true)        -- change it from code
+print(toggle.Value)     -- read the current value</code></pre>
+</section>
+
+<section class="doc" id="slider">
+    <h2>Slider<a class="anchor" href="#slider">#</a></h2>
+    <figure class="shot"><img src="assets/shots/slider.webp" width="1520" height="840" loading="lazy" alt="Sliders with an editable value box."><figcaption><span class="vi">Slider với ô số gõ được ở bên phải.</span><span class="en">Sliders with an editable value box.</span></figcaption></figure>
+<pre><code class="lua">-- name, min, max, default, callback
+local slider = Tab:Slider("Walk speed", 16, 100, 16, function(v) end)
+
+Tab:Slider({
+    Name = "Volume",
+    Min = 0, Max = 1,
+    Increment = 0.05,
+    Default = 0.5,
+    Suffix = "",
+    Flag = "Volume",
+    Callback = function(v) end,
+})
+
+slider:Set(50)</code></pre>
+    <div class="vi"><p>Bấm vào ô số bên phải slider để gõ giá trị trực tiếp.</p></div>
+    <div class="en"><p>Click the number box next to the slider to type a value.</p></div>
+</section>
+
+<section class="doc" id="button">
+    <h2>Button<a class="anchor" href="#button">#</a></h2>
+    <figure class="shot"><img src="assets/shots/button.webp" width="1520" height="840" loading="lazy" alt="Default, Primary (gradient) and Danger buttons."><figcaption><span class="vi">Nút Default, Primary (màu chuyển) và Danger.</span><span class="en">Default, Primary (gradient) and Danger buttons.</span></figcaption></figure>
+<pre><code class="lua">local btn = Tab:Button("Teleport", function() end)
+
+Tab:Button({
+    Name = "Save",
+    ButtonText = "Save",
+    ButtonIcon = "save",
+    Style = "Primary",       -- "Default", "Primary" or "Danger"
+    Callback = function() end,
+})
+
+btn:SetText("Running...")</code></pre>
+</section>
+
+<section class="doc" id="dropdown">
+    <h2>Dropdown<a class="anchor" href="#dropdown">#</a></h2>
+    <figure class="shot"><img src="assets/shots/dropdown.webp" width="1520" height="840" loading="lazy" alt="An open multi-select dropdown."><figcaption><span class="vi">Dropdown chọn nhiều đang mở.</span><span class="en">An open multi-select dropdown.</span></figcaption></figure>
+<pre><code class="lua">local dropdown = Tab:Dropdown("Mode", { "Legit", "Rage" }, "Legit", function(v) end)
+
+Tab:Dropdown({
+    Name = "Targets",
+    Multi = true,                    -- pick several options
+    Options = { "Head", "Torso", "Legs" },
+    Default = { "Head" },
+    Flag = "Targets",
+    Callback = function(list) end,
+})
+
+dropdown:Set("Rage")
+dropdown:Refresh({ "A", "B", "C" })  -- replace the options</code></pre>
+</section>
+
+<section class="doc" id="segmented">
+    <h2>Segmented<a class="anchor" href="#segmented">#</a></h2>
+    <figure class="shot"><img src="assets/shots/segmented.webp" width="1520" height="840" loading="lazy" alt="Segmented controls."><figcaption><span class="vi">Segmented: chọn một trong vài lựa chọn.</span><span class="en">Segmented controls.</span></figcaption></figure>
+    <div class="vi"><p>Một hàng nút liền nhau, chọn một trong vài lựa chọn ngắn.</p></div>
+    <div class="en"><p>A row of joined buttons for picking one of a few short options.</p></div>
+<pre><code class="lua">Tab:Segmented("Speed", { "Slow", "Normal", "Fast" }, "Normal", function(v) end)</code></pre>
+</section>
+
+<section class="doc" id="keybind">
+    <h2>Keybind<a class="anchor" href="#keybind">#</a></h2>
+    <figure class="shot"><img src="assets/shots/keybind.webp" width="1520" height="840" loading="lazy" alt="Keybinds; the last one is waiting for a key."><figcaption><span class="vi">Keybind, ô cuối đang chờ nhấn phím mới.</span><span class="en">Keybinds; the last one is waiting for a key.</span></figcaption></figure>
+<pre><code class="lua">Tab:Keybind("Quick action", Enum.KeyCode.F, function()
+    print("pressed")
+end)
+
+Tab:Keybind({
+    Name = "Dash",
+    Default = "Q",
+    Flag = "DashKey",
+    Callback = function() end,      -- runs when the key is pressed
+    Changed = function(key) end,    -- runs when the user picks a new key
+})</code></pre>
+    <div class="vi"><p>Bấm vào ô phím rồi nhấn phím mới để đổi. <code>Esc</code> để huỷ, <code>Backspace</code> để xoá.</p></div>
+    <div class="en"><p>Click the key box and press a new key. <code>Esc</code> cancels, <code>Backspace</code> clears it.</p></div>
+</section>
+
+<section class="doc" id="input">
+    <h2>Input<a class="anchor" href="#input">#</a></h2>
+    <figure class="shot"><img src="assets/shots/input.webp" width="1520" height="840" loading="lazy" alt="Text inputs; the first one is focused."><figcaption><span class="vi">Ô nhập chữ, ô đầu đang được chọn.</span><span class="en">Text inputs; the first one is focused.</span></figcaption></figure>
+<pre><code class="lua">Tab:Input("Player name", "Type a name", function(text, enterPressed) end)
+
+Tab:Input({
+    Name = "Amount",
+    Numeric = true,
+    Default = "10",
+    Flag = "Amount",
+    Callback = function(text) end,
+})</code></pre>
+</section>
+
+<section class="doc" id="text">
+    <h2>Label &amp; Paragraph<a class="anchor" href="#text">#</a></h2>
+    <figure class="shot"><img src="assets/shots/text.webp" width="1520" height="840" loading="lazy" alt="A label and a paragraph."><figcaption><span class="vi">Label và Paragraph.</span><span class="en">A label and a paragraph.</span></figcaption></figure>
+<pre><code class="lua">local label = Tab:Label("A simple line of text")
+label:Set("New text")
+
+local paragraph = Tab:Paragraph("Title", "Longer text that wraps inside the card.")
+paragraph:Set("New title", "New content")</code></pre>
+</section>
+
+<!-- ================= NOTIFICATIONS ================= -->
+<section class="doc" id="notifications">
+    <h2><span class="vi">Thông báo</span><span class="en">Notifications</span><a class="anchor" href="#notifications">#</a></h2>
+<pre><code class="lua">Window:Notify("Title", "Content", 4)
+
+Window:Notify({
+    Title = "Saved",
+    Content = "Your config was saved",
+    Type = "Success",               -- "Info", "Success", "Warning", "Error"
+    Duration = 3,
+})
+
+Window:Notify({ Title = "Custom", Content = "With an icon", Icon = "rocket", Color = Color3.fromRGB(191, 90, 242) })</code></pre>
+    <div class="vi"><p>Thông báo trượt vào ở góc trên bên phải, có thanh đếm thời gian. Bấm vào để đóng sớm.</p></div>
+    <div class="en"><p>Notifications slide in at the top right with a countdown bar. Click one to close it early.</p></div>
+    <figure class="shot"><img src="assets/shots/notifications.webp" width="1520" height="840" loading="lazy" alt="Glass notifications: Success, Warning and Info."><figcaption><span class="vi">Thông báo kính: Success, Warning và Info.</span><span class="en">Glass notifications: Success, Warning and Info.</span></figcaption></figure>
+</section>
+
+<!-- ================= KEY SYSTEM ================= -->
+<section class="doc" id="key-system">
+    <h2>Key System<a class="anchor" href="#key-system">#</a></h2>
+    <div class="vi"><p>Thêm <code>KeySystem</code> vào <code>CreateWindow</code>. Cửa sổ chính chỉ hiện sau khi người dùng nhập đúng key.</p></div>
+    <div class="en"><p>Add <code>KeySystem</code> to <code>CreateWindow</code>. The main window only appears after a valid key is entered.</p></div>
+    <figure class="shot"><img src="assets/shots/keysystem.webp" width="1520" height="840" loading="lazy" alt="The key window with the Slime theme."><figcaption><span class="vi">Cửa sổ nhập key với theme Slime.</span><span class="en">The key window with the Slime theme.</span></figcaption></figure>
+<pre><code class="lua">local Window = SlimeUI:CreateWindow({
+    Title = "My Hub",
+    KeySystem = {
+        Key = { "KEY-1", "KEY-2" },          -- accepted keys
+        Link = "https://your-key-link",      -- copied by the Get Key button
+        SaveKey = true,                      -- remember the key next time
+    },
+})</code></pre>
+    <div class="vi"><p>Muốn kiểm tra key bằng server riêng thì dùng <code>Validate</code> thay cho <code>Key</code>. Hàm trả về <code>true</code> nếu đúng, hoặc <code>false</code> kèm lời nhắn.</p></div>
+    <div class="en"><p>To check keys on your own server, use <code>Validate</code> instead of <code>Key</code>. Return <code>true</code> for a valid key, or <code>false</code> and a message.</p></div>
+<pre><code class="lua">KeySystem = {
+    Link = "https://your-key-link",
+    Validate = function(key)
+        local ok = game:HttpGet("https://your-api/check?key=" .. key) == "true"
+        return ok, "Wrong or expired key."
+    end,
+}</code></pre>
+    <div class="vi"><p>Tuỳ chọn khác: <code>Title</code>, <code>Subtitle</code>, <code>Note</code>, <code>Placeholder</code>, <code>FileName</code> (mặc định <code>SlimeUI/key.txt</code>). Nếu người dùng đóng cửa sổ key, <code>CreateWindow</code> trả về một đối tượng rỗng nên code phía sau không bị lỗi.</p></div>
+    <div class="en"><p>Other options: <code>Title</code>, <code>Subtitle</code>, <code>Note</code>, <code>Placeholder</code>, <code>FileName</code> (default <code>SlimeUI/key.txt</code>). If the user closes the key window, <code>CreateWindow</code> returns an empty object, so the rest of your script does not error.</p></div>
+</section>
+
+<!-- ================= THEMES ================= -->
+<section class="doc" id="themes">
+    <h2>Themes<a class="anchor" href="#themes">#</a></h2>
+    <div class="vi"><p>SlimeUI có 9 theme. Bấm vào một theme để xem trước ở khung phía trên. Đổi theme lúc tạo cửa sổ, bằng code, hoặc trong tab Settings.</p></div>
+    <div class="en"><p>SlimeUI ships with 9 themes. Click one to preview it in the window at the top. Pick a theme when creating the window, from code, or in the Settings tab.</p></div>
+    <figure class="shot"><img src="assets/shots/themes.webp" width="1520" height="840" loading="lazy" alt="The 9 built-in themes."><figcaption><span class="vi">9 theme có sẵn.</span><span class="en">The 9 built-in themes.</span></figcaption></figure>
+    <div class="themes" id="theme-gallery"></div>
+<pre><code class="lua">SlimeUI:CreateWindow({ Theme = "Slime" })
+
+Window:SetTheme("Ocean")
+Window:SetAccent("Pink")      -- or Window:SetAccent("Theme") to reset
+
+print(table.concat(SlimeUI:GetThemes(), ", "))</code></pre>
+    <div class="callout">
+        <p class="vi"><b>Theme Slime</b> là theme đặc biệt: kính chuyển màu xanh lá sang xanh ngọc giống logo, một lớp slime gợn sóng ở mép trên với giọt chảy xuống và thỉnh thoảng rơi, bong bóng bóng loáng nổi lên, nút và công tắc dùng màu chuyển, cửa sổ mở ra và công tắc bật tắt đều nảy như thạch.</p>
+        <p class="en"><b>The Slime theme</b> is special: green-to-cyan glass that matches the logo, a wavy slime coat on the top edge with drips that fall now and then, glossy rising bubbles, gradient buttons and switches, and a jelly bounce when the window opens or a switch flips.</p>
+    </div>
+</section>
+
+<section class="doc" id="custom-themes">
+    <h2><span class="vi">Tự tạo theme</span><span class="en">Custom themes</span><a class="anchor" href="#custom-themes">#</a></h2>
+    <div class="vi"><p>Gọi <code>SlimeUI:AddTheme</code> trước khi tạo cửa sổ. Khoá nào không khai báo sẽ lấy từ theme Glass.</p></div>
+    <div class="en"><p>Call <code>SlimeUI:AddTheme</code> before creating the window. Any key you leave out is taken from the Glass theme.</p></div>
+<pre><code class="lua">SlimeUI:AddTheme("Lava", {
+    Window = Color3.fromRGB(40, 8, 4),
+    WindowT = 0.45,                       -- window transparency
+    Text = Color3.fromRGB(255, 244, 236),
+    SubText = Color3.fromRGB(240, 180, 150),
+    Accent = Color3.fromRGB(255, 80, 20),
+    Effect = nil,                         -- "Slime" turns on the slime effects
+})
+
+local Window = SlimeUI:CreateWindow({ Theme = "Lava" })</code></pre>
+    <div class="table-wrap"><table>
+        <thead><tr><th><span class="vi">Khoá</span><span class="en">Keys</span></th><th><span class="vi">Dùng cho</span><span class="en">Used for</span></th></tr></thead>
+        <tbody>
+        <tr><td><code>Window</code>, <code>WindowT</code></td><td><span class="vi">Màu và độ trong suốt của cửa sổ, thanh trên, thông báo.</span><span class="en">Color and transparency of the window, top bar and notifications.</span></td></tr>
+        <tr><td><code>Sidebar</code>, <code>Card</code>, <code>Hover</code>, <code>Line</code> (+<code>T</code>)</td><td><span class="vi">Sidebar, thẻ chứa element, nền khi rê chuột, đường kẻ.</span><span class="en">Sidebar, element cards, hover background, separators.</span></td></tr>
+        <tr><td><code>Edge</code>, <code>EdgeA</code>, <code>EdgeB</code>, <code>Rim</code></td><td><span class="vi">Viền kính: màu, độ sáng hai đầu, viền trong.</span><span class="en">Glass edge color, brightness at each end, inner rim.</span></td></tr>
+        <tr><td><code>Sheen</code>, <code>Band</code></td><td><span class="vi">Ánh sáng phía trên và dải sáng chéo (1 = tắt).</span><span class="en">Top sheen and diagonal light band (1 = off).</span></td></tr>
+        <tr><td><code>Text</code>, <code>SubText</code></td><td><span class="vi">Chữ chính và chữ phụ.</span><span class="en">Main and secondary text.</span></td></tr>
+        <tr><td><code>Control</code>, <code>Field</code>, <code>Select</code>, <code>SegPill</code>, <code>Menu</code> (+<code>T</code>)</td><td><span class="vi">Công tắc tắt, ô nhập, tab đang chọn, segmented, menu dropdown.</span><span class="en">Off switches, input fields, selected tab, segmented pill, dropdown menu.</span></td></tr>
+        <tr><td><code>Knob</code>, <code>Accent</code></td><td><span class="vi">Núm công tắc/slider và màu nhấn.</span><span class="en">Switch and slider knobs, and the accent color.</span></td></tr>
+        <tr><td><code>Accent2</code></td><td><span class="vi">Màu thứ hai (không bắt buộc). Có thì nút Primary, công tắc và slider dùng màu chuyển <code>Accent</code> → <code>Accent2</code>.</span><span class="en">Optional second color. When set, primary buttons, switches and sliders use an <code>Accent</code> → <code>Accent2</code> gradient.</span></td></tr>
+        <tr><td><code>Effect</code></td><td><span class="vi">Hiệu ứng đặc biệt. Hiện có <code>"Slime"</code>.</span><span class="en">Special effect. Currently <code>"Slime"</code>.</span></td></tr>
+        </tbody>
+    </table></div>
+    <div class="vi"><p>Các khoá kết thúc bằng <code>T</code> là độ trong suốt từ 0 (đặc) đến 1 (trong hẳn).</p></div>
+    <div class="en"><p>Keys ending in <code>T</code> are transparency values from 0 (solid) to 1 (invisible).</p></div>
+</section>
+
+<!-- ================= FLAGS ================= -->
+<section class="doc" id="flags">
+    <h2><span class="vi">Flag và config</span><span class="en">Flags and configs</span><a class="anchor" href="#flags">#</a></h2>
+    <div class="vi"><p>Element có <code>Flag</code> sẽ lưu giá trị vào <code>SlimeUI.Flags</code> và được ghi khi lưu config. Tab Settings có sẵn ô tên config cùng nút Save và Load.</p></div>
+    <div class="en"><p>Elements with a <code>Flag</code> keep their value in <code>SlimeUI.Flags</code> and are written when you save a config. The Settings tab already has a config name box with Save and Load buttons.</p></div>
+<pre><code class="lua">Tab:Toggle({ Name = "Auto farm", Flag = "AutoFarm" })
+
+print(SlimeUI.Flags.AutoFarm)
+
+Window:SaveConfig("main")    -- writes SlimeUI/configs/main.json
+Window:LoadConfig("main")</code></pre>
+</section>
+
+<!-- ================= ICONS ================= -->
+<section class="doc" id="icons">
+    <h2>Icons<a class="anchor" href="#icons">#</a></h2>
+    <div class="vi"><p>SlimeUI có sẵn 818 icon <a href="https://lucide.dev/icons/" target="_blank" rel="noopener">Lucide</a>. Dùng tên icon ở bất cứ đâu nhận <code>Icon</code>, ví dụ <code>"home"</code>, <code>"settings"</code>, <code>"swords"</code>, <code>"eye"</code>, <code>"bell"</code>, <code>"rocket"</code>, <code>"shield"</code>, <code>"user"</code>, <code>"map-pin"</code>, <code>"crosshair"</code>. Cũng nhận <code>rbxassetid://...</code> hoặc số asset id.</p></div>
+    <div class="en"><p>SlimeUI bundles 818 <a href="https://lucide.dev/icons/" target="_blank" rel="noopener">Lucide</a> icons. Use the icon name anywhere an <code>Icon</code> is accepted, for example <code>"home"</code>, <code>"settings"</code>, <code>"swords"</code>, <code>"eye"</code>, <code>"bell"</code>, <code>"rocket"</code>, <code>"shield"</code>, <code>"user"</code>, <code>"map-pin"</code>, <code>"crosshair"</code>. It also accepts <code>rbxassetid://...</code> or a numeric asset id.</p></div>
+<pre><code class="lua">print(SlimeUI:GetIcon("home"))   -- rbxassetid://...</code></pre>
+</section>
+
+<!-- ================= MOBILE ================= -->
+<section class="doc" id="mobile">
+    <h2><span class="vi">Trên điện thoại</span><span class="en">Mobile</span><a class="anchor" href="#mobile">#</a></h2>
+    <ul class="vi">
+        <li>Bố cục gọn tự bật trên màn hình nhỏ hoặc thiết bị cảm ứng: sidebar chỉ còn icon, ô tìm kiếm lên header, nút và hàng to hơn cho dễ chạm.</li>
+        <li>Nút nổi có logo dùng để mở/đóng UI và kéo thả được.</li>
+        <li>Kéo slider sẽ không làm cuộn trang. Có thể kéo góc cửa sổ bằng ngón tay.</li>
+        <li>Ép bật hoặc tắt bằng <code>Compact = true</code> hoặc <code>Compact = false</code>.</li>
+    </ul>
+    <figure class="shot"><img src="assets/shots/mobile.webp" width="1520" height="840" loading="lazy" alt="The compact layout on a phone."><figcaption><span class="vi">Bố cục gọn trên điện thoại.</span><span class="en">The compact layout on a phone.</span></figcaption></figure>
+    <ul class="en">
+        <li>The compact layout turns on automatically on small or touch screens: icon-only sidebar, search in the header, larger rows and buttons.</li>
+        <li>The floating logo button opens and closes the UI and can be dragged anywhere.</li>
+        <li>Dragging a slider does not scroll the page, and window corners can be resized with a finger.</li>
+        <li>Force it with <code>Compact = true</code> or <code>Compact = false</code>.</li>
+    </ul>
+</section>
+
+<!-- ================= BUILD ================= -->
+<section class="doc" id="build">
+    <h2><span class="vi">Build từ source</span><span class="en">Build from source</span><a class="anchor" href="#build">#</a></h2>
+    <div class="vi"><p>Mã nguồn chia thành module trong thư mục <code>src/</code>. Script build ghép chúng (theo <code>src/order.txt</code>) thành một file <code>dist/SlimeUI.lua</code>. Cần Python 3.</p></div>
+    <div class="en"><p>The source is split into modules in <code>src/</code>. The build script joins them (in the order of <code>src/order.txt</code>) into one file, <code>dist/SlimeUI.lua</code>. Requires Python 3.</p></div>
+<pre><code class="bash">python build/build.py</code></pre>
+<pre><code class="text">src/
+  Core.lua          library table, services, constants
+  Icons.lua         Lucide icon ids
+  Themes.lua        built-in themes
+  Util.lua          helpers (instances, tweens, images)
+  ThemeEngine.lua   live theme switching, glass edges
+  KeySystem.lua     key window
+  Window.lua        window, tabs, elements, settings
+  Init.lua          AddTheme, GetThemes, Notify
+  order.txt         build order</code></pre>
+    <div class="vi"><p>Khi phát triển, chép cả repo vào <code>workspace/SlimeUI</code> của executor và chạy thẳng từ <code>src/</code> không cần build:</p></div>
+    <div class="en"><p>While developing, copy the repo into your executor's <code>workspace/SlimeUI</code> and run straight from <code>src/</code> without building:</p></div>
+<pre><code class="lua">local SlimeUI = loadstring(readfile("SlimeUI/dev.lua"))("SlimeUI")</code></pre>
+    <h3><span class="vi">Đăng tài liệu này lên GitHub Pages</span><span class="en">Publish these docs on GitHub Pages</span></h3>
+    <ol class="steps vi">
+        <li>Push repo lên GitHub.</li>
+        <li>Mở <b>Settings → Pages</b>.</li>
+        <li>Chọn <b>Deploy from a branch</b>, nhánh <code>main</code>, thư mục <code>/docs</code>, rồi bấm Save.</li>
+        <li>Khoảng một phút sau, trang có ở <code>https://&lt;tên-github&gt;.github.io/SlimeUI/</code>.</li>
+    </ol>
+    <ol class="steps en">
+        <li>Push the repository to GitHub.</li>
+        <li>Open <b>Settings → Pages</b>.</li>
+        <li>Choose <b>Deploy from a branch</b>, branch <code>main</code>, folder <code>/docs</code>, then save.</li>
+        <li>About a minute later the site is live at <code>https://&lt;username&gt;.github.io/SlimeUI/</code>.</li>
+    </ol>
+</section>
+
+<!-- ================= CREDITS ================= -->
+<section class="doc" id="credits">
+    <h2><span class="vi">Giấy phép và ghi công</span><span class="en">License &amp; credits</span><a class="anchor" href="#credits">#</a></h2>
+    <ul>
+        <li><span class="vi">SlimeUI phát hành theo giấy phép <a href="https://github.com/SlimexDev/SlimeUI/blob/main/LICENSE">MIT</a>.</span><span class="en">SlimeUI is released under the <a href="https://github.com/SlimexDev/SlimeUI/blob/main/LICENSE">MIT License</a>.</span></li>
+        <li><span class="vi">Thiết kế và code:</span><span class="en">Design and code:</span> <b>SlimexDev</b></li>
+        <li><span class="vi">Icon:</span><span class="en">Icons:</span> <a href="https://lucide.dev" target="_blank" rel="noopener">Lucide</a> (ISC); <span class="vi">bảng asset id lấy từ</span><span class="en">asset ID table from</span> <a href="https://github.com/dawid-scripts/Fluent" target="_blank" rel="noopener">Fluent</a> (MIT)</li>
+        <li><span class="vi">Cấu trúc dự án tham khảo</span><span class="en">Project layout inspired by</span> <a href="https://github.com/Footagesus/WindUI" target="_blank" rel="noopener">WindUI</a></li>
+    </ul>
+    <footer>
+        SlimeUI v1.0.0 · by SlimexDev ·
+        <a href="https://github.com/SlimexDev/SlimeUI">GitHub</a>
+    </footer>
+</section>
+
+</main>
+</div>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

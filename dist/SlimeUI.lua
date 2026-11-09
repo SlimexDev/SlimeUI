@@ -1,5 +1,5 @@
 --[[
-    SlimeUI v1.0.0
+    SlimeUI v1.1.0
     UI library for Roblox scripts
 
     Author:  SlimexDev
@@ -15,7 +15,7 @@
 -- Core: library table, Roblox services, shared constants
 ---------------------------------------------------------------------
 local SlimeUI = {
-    Version = "1.0.0",
+    Version = "1.1.0",
     Author = "SlimexDev",
     -- Change the two lines below if your GitHub repository has a different name
     Repository = "https://github.com/SlimexDev/SlimeUI",

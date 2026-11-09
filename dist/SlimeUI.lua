@@ -1,5 +1,5 @@
 --[[
-    SlimeUI v1.1.0
+    SlimeUI v1.2.0
     UI library for Roblox scripts
 
     Author:  SlimexDev
@@ -15,7 +15,7 @@
 -- Core: library table, Roblox services, shared constants
 ---------------------------------------------------------------------
 local SlimeUI = {
-    Version = "1.1.0",
+    Version = "1.2.0",
     Author = "SlimexDev",
     -- Change the two lines below if your GitHub repository has a different name
     Repository = "https://github.com/SlimexDev/SlimeUI",
@@ -3877,8 +3877,112 @@ function SlimeUI:CreateWindow(opts)
         }
     end
 
+    -- Key status: type, status, time left, expiry, masked key and a copy button.
+    -- Info = { Key, Tier, ExpiresAt, Remaining } (defaults to SlimeUI.KeyInfo set by KeySystem).
+    function SectionMethods:KeyStatus(o)
+        o = o or {}
+        local info = o.Info or SlimeUI.KeyInfo
+        if type(info) ~= "table" or type(info.Key) ~= "string" then
+            local empty = self:Label(o.EmptyText or "No key info: this script was started without the key system.")
+            return { Type = "KeyStatus", Refresh = function() end, TimeLeft = function() return nil end, Label = empty }
+        end
+
+        local title = o.Title or Window.Title or "SlimeUI"
+        local notify = o.Notify ~= false
+        local startedAt = os.time()
+        -- Unix time the key expires, or nil for a lifetime key
+        local expiresAt = tonumber(info.ExpiresAt) or (tonumber(info.Remaining) and startedAt + tonumber(info.Remaining)) or nil
+
+        local function maskKey(key)
+            local parts = string.split(key, "-")
+            for i = 3, #parts - 1 do
+                parts[i] = string.rep("•", #parts[i])
+            end
+            return table.concat(parts, "-")
+        end
+        local function formatLeft(seconds)
+            seconds = math.max(0, math.floor(seconds))
+            local d, h, m = math.floor(seconds / 86400), math.floor(seconds % 86400 / 3600), math.floor(seconds % 3600 / 60)
+            if d > 0 then
+                return string.format("%dd %dh %dm", d, h, m)
+            elseif h > 0 then
+                return string.format("%dh %dm", h, m)
+            end
+            return string.format("%dm", math.max(m, 1))
+        end
+
+        self:Label("Type: " .. (info.Tier == "premium" and "Premium" or "Free"))
+        local StatusLabel = self:Label("Status: Active")
+        local LeftLabel = self:Label("Time left: ...")
+        self:Label("Expires: " .. (expiresAt and os.date("%Y-%m-%d %H:%M", expiresAt) or "Never (lifetime)"))
+        if o.ShowKey ~= false then
+            self:Label("Key: " .. maskKey(info.Key))
+        end
+
+        local warnedSoon, warnedExpired = false, false
+        local function refresh()
+            if not expiresAt then
+                LeftLabel:Set("Time left: Lifetime")
+                return
+            end
+            local left = expiresAt - os.time()
+            if left <= 0 then
+                StatusLabel:Set("Status: Expired")
+                LeftLabel:Set("Time left: 0m (get a new key to keep playing)")
+                if notify and not warnedExpired then
+                    warnedExpired = true
+                    Window:Notify({ Title = title, Content = "Your key has expired. Get a new key next time you run the script.", Type = "Warning", Duration = 8 })
+                end
+                return
+            end
+            StatusLabel:Set(left <= 3600 and "Status: Expiring soon" or "Status: Active")
+            LeftLabel:Set("Time left: " .. formatLeft(left))
+            if notify and left <= 600 and not warnedSoon then
+                warnedSoon = true
+                Window:Notify({ Title = title, Content = "Your key expires in " .. formatLeft(left) .. ".", Type = "Warning", Duration = 6 })
+            end
+        end
+        refresh()
+        task.spawn(function()
+            while not Window.Destroyed do
+                task.wait(30)
+                refresh()
+            end
+        end)
+
+        if o.CopyButton ~= false then
+            self:Button({
+                Name = "Copy Key",
+                Description = "Copy your full key to the clipboard.",
+                Icon = "key",
+                ButtonText = "Copy",
+                Callback = function()
+                    local ok = type(setclipboard) == "function" and pcall(setclipboard, info.Key)
+                    Window:Notify({
+                        Title = title,
+                        Content = ok and "Key copied to clipboard!" or ("Could not copy. Key: " .. info.Key),
+                        Type = ok and "Success" or "Warning",
+                        Duration = ok and 3 or 8,
+                    })
+                end,
+            })
+        end
+
+        return {
+            Type = "KeyStatus",
+            Info = info,
+            Refresh = function()
+                refresh()
+            end,
+            -- Seconds left, or nil for a lifetime key
+            TimeLeft = function()
+                return expiresAt and math.max(0, expiresAt - os.time()) or nil
+            end,
+        }
+    end
+
     -- Short names + Add... aliases
-    local ElementNames = { "Toggle", "Slider", "Button", "Dropdown", "Segmented", "Keybind", "Input", "Label", "Paragraph" }
+    local ElementNames = { "Toggle", "Slider", "Button", "Dropdown", "Segmented", "Keybind", "Input", "Label", "Paragraph", "KeyStatus" }
     SectionMethods.Textbox = SectionMethods.Input
     for _, n in ipairs(ElementNames) do
         SectionMethods["Add" .. n] = SectionMethods[n]

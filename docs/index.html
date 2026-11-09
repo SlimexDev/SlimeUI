@@ -21,7 +21,7 @@
     <button class="icon-btn menu-btn" type="button" aria-label="Menu">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
     </button>
-    <a class="brand" href="#top"><img src="assets/logo.png" alt="">SlimeUI <span class="badge">v1.1.0</span></a>
+    <a class="brand" href="#top"><img src="assets/logo.png" alt="">SlimeUI <span class="badge">v1.2.0</span></a>
     <div class="spacer"></div>
     <div class="lang-switch" role="group" aria-label="Language">
         <button type="button" data-lang="vi">VI</button>
@@ -427,6 +427,25 @@ print(info.Tier, info.Remaining)   -- "premium", seconds left (nil = lifetime)</
     <div class="en"><p>After a successful check the status line shows the key type and time left (for example <code>Free · 23h 12m left</code>). <code>KeySystem</code> returns <code>true</code> plus a table <code>{ Key, Tier, ExpiresAt, Remaining }</code>; the same table is stored in <code>SlimeUI.KeyInfo</code>, also when the key system runs inside <code>CreateWindow</code>. If the saved key has expired or is locked to another device, the key window shows why. Three wrong keys in a row lock the Verify button for 5 seconds. <code>Validate</code> still wins over <code>Api</code> if you set both.</p></div>
     <div class="vi"><p>Tuỳ chọn khác: <code>Title</code>, <code>Subtitle</code>, <code>Note</code>, <code>Placeholder</code>, <code>FileName</code> (mặc định <code>SlimeUI/key.txt</code>), <code>Discord</code> và <code>Premium</code> (thêm hàng nút copy link). Nếu người dùng đóng cửa sổ key, <code>CreateWindow</code> trả về một đối tượng rỗng nên code phía sau không bị lỗi.</p></div>
     <div class="en"><p>Other options: <code>Title</code>, <code>Subtitle</code>, <code>Note</code>, <code>Placeholder</code>, <code>FileName</code> (default <code>SlimeUI/key.txt</code>), <code>Discord</code> and <code>Premium</code> (add a row of copy-link buttons). If the user closes the key window, <code>CreateWindow</code> returns an empty object, so the rest of your script does not error.</p></div>
+
+    <h3 id="key-status"><span class="vi">Hiện trạng thái key</span><span class="en">Key status</span></h3>
+    <div class="vi"><p><code>Tab:KeyStatus()</code> thêm các dòng thông tin key vào tab: loại key, trạng thái (<code>Active</code>, <code>Expiring soon</code>, <code>Expired</code>), thời gian còn lại (tự cập nhật mỗi 30 giây), giờ hết hạn, key đã che phần giữa và nút <b>Copy Key</b>. Khi key còn dưới 10 phút và khi hết hạn sẽ có thông báo. Mặc định đọc <code>SlimeUI.KeyInfo</code>; truyền <code>Info</code> nếu thông tin key đến từ nơi khác (ví dụ server chèn vào script).</p></div>
+    <div class="en"><p><code>Tab:KeyStatus()</code> adds key info rows to a tab: key type, status (<code>Active</code>, <code>Expiring soon</code>, <code>Expired</code>), time left (refreshed every 30 seconds), expiry time, the key with its middle hidden, and a <b>Copy Key</b> button. It notifies the user when 10 minutes are left and when the key expires. It reads <code>SlimeUI.KeyInfo</code> by default; pass <code>Info</code> when the key info comes from somewhere else (for example a value your server injects into the script).</p></div>
+<pre><code class="lua">Home:Section("Key Status")
+local status = Home:KeyStatus()                       -- uses SlimeUI.KeyInfo
+
+-- or with your own info table
+Home:KeyStatus({
+    Info = { Key = "SLIME-...", Tier = "free", ExpiresAt = 1765000000 },
+    ShowKey = true,      -- show the masked key (default true)
+    CopyButton = true,   -- show the Copy Key button (default true)
+    Notify = true,       -- warn when it is about to expire (default true)
+})
+
+print(status.TimeLeft())   -- seconds left, nil for a lifetime key
+status.Refresh()           -- update the rows now</code></pre>
+    <div class="vi"><p>Không có thông tin key thì chỉ hiện một dòng "No key info" (đổi chữ bằng <code>EmptyText</code>).</p></div>
+    <div class="en"><p>With no key info it shows a single "No key info" line (change it with <code>EmptyText</code>).</p></div>
 </section>
 
 <!-- ================= THEMES ================= -->
@@ -563,7 +582,7 @@ Window:LoadConfig("main")</code></pre>
         <li><span class="vi">Cấu trúc dự án tham khảo</span><span class="en">Project layout inspired by</span> <a href="https://github.com/Footagesus/WindUI" target="_blank" rel="noopener">WindUI</a></li>
     </ul>
     <footer>
-        SlimeUI v1.1.0 · by SlimexDev ·
+        SlimeUI v1.2.0 · by SlimexDev ·
         <a href="https://github.com/SlimexDev/SlimeUI">GitHub</a>
     </footer>
 </section>

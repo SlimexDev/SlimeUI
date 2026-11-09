@@ -91,6 +91,7 @@ Press `RightShift` to hide or show the window.
 | Input | `Tab:Input(name, placeholder, callback)` |
 | Label | `Tab:Label(text)` |
 | Paragraph | `Tab:Paragraph(title, content)` |
+| Key status | `Tab:KeyStatus({ Info = keyInfo })` |
 
 Every element also accepts a table with extra options such as `Description`, `Icon` and `Flag`. See the [documentation](https://slimexdev.github.io/SlimeUI/) for all options, window methods, the key system, themes and configs.
 

@@ -18,7 +18,8 @@ local Window = SlimeUI:CreateWindow({
         -- Premium = "https://example.com/premium",
     },
 })
--- With Api, SlimeUI.KeyInfo holds { Key, Tier, ExpiresAt, Remaining } after the key is verified.
+-- With Api, SlimeUI.KeyInfo holds { Key, Tier, ExpiresAt, Remaining } after the key is verified,
+-- and Tab:KeyStatus() shows it (type, time left, expiry, copy button).
 
 ---------------------------------------------------------------------
 -- Home

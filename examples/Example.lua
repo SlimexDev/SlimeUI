@@ -12,8 +12,13 @@ local Window = SlimeUI:CreateWindow({
         Key = { "SLIME-DEMO-KEY" },
         Link = "https://example.com/get-key",
         SaveKey = true,
+        -- With a key server, replace Key with:
+        -- Api = "https://your-worker.workers.dev/api",
+        -- Discord = "https://discord.gg/your-invite",
+        -- Premium = "https://example.com/premium",
     },
 })
+-- With Api, SlimeUI.KeyInfo holds { Key, Tier, ExpiresAt, Remaining } after the key is verified.
 
 ---------------------------------------------------------------------
 -- Home

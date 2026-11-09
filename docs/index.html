@@ -411,8 +411,22 @@ Window:Notify({ Title = "Custom", Content = "With an icon", Icon = "rocket", Col
         return ok, "Wrong or expired key."
     end,
 }</code></pre>
-    <div class="vi"><p>Tuỳ chọn khác: <code>Title</code>, <code>Subtitle</code>, <code>Note</code>, <code>Placeholder</code>, <code>FileName</code> (mặc định <code>SlimeUI/key.txt</code>). Nếu người dùng đóng cửa sổ key, <code>CreateWindow</code> trả về một đối tượng rỗng nên code phía sau không bị lỗi.</p></div>
-    <div class="en"><p>Other options: <code>Title</code>, <code>Subtitle</code>, <code>Note</code>, <code>Placeholder</code>, <code>FileName</code> (default <code>SlimeUI/key.txt</code>). If the user closes the key window, <code>CreateWindow</code> returns an empty object, so the rest of your script does not error.</p></div>
+    <h3 id="key-server"><span class="vi">Dùng key server</span><span class="en">Key server</span></h3>
+    <div class="vi"><p>Có server key riêng thì chỉ cần khai báo <code>Api</code>. SlimeUI tự gọi <code>GET &lt;Api&gt;/verify?key=...&amp;hwid=...</code> và đọc kết quả JSON <code>{ "valid": true, "message": "...", "tier": "premium", "expiresAt": 1765000000, "remaining": 86400 }</code>. HWID lấy từ <code>gethwid()</code> nếu executor có, nếu không thì dùng <code>RbxAnalyticsService:GetClientId()</code>. Muốn tự lấy HWID hoặc đổi thời gian chờ server (mặc định 10 giây) thì truyền bảng <code>{ Url = ..., Hwid = function() ... end, Timeout = 10 }</code>.</p></div>
+    <div class="en"><p>If you run your own key server, set <code>Api</code>. SlimeUI calls <code>GET &lt;Api&gt;/verify?key=...&amp;hwid=...</code> and reads the JSON reply <code>{ "valid": true, "message": "...", "tier": "premium", "expiresAt": 1765000000, "remaining": 86400 }</code>. The HWID comes from <code>gethwid()</code> when the executor has it, otherwise from <code>RbxAnalyticsService:GetClientId()</code>. To supply your own HWID or change how long to wait for the server (10 seconds by default), pass a table <code>{ Url = ..., Hwid = function() ... end, Timeout = 10 }</code>.</p></div>
+<pre><code class="lua">local ok, info = SlimeUI:KeySystem({
+    Title = "My Hub",
+    Api = "https://your-worker.workers.dev/api",
+    Link = "https://your-worker.workers.dev",     -- Get Key button
+    Discord = "https://discord.gg/your-invite",   -- optional Discord button
+    Premium = "https://your-site/premium",        -- optional Premium button
+})
+if not ok then return end
+print(info.Tier, info.Remaining)   -- "premium", seconds left (nil = lifetime)</code></pre>
+    <div class="vi"><p>Sau khi xác minh, dòng trạng thái hiện loại key và thời gian còn lại (ví dụ <code>Free · 23h 12m left</code>). <code>KeySystem</code> trả về <code>true</code> kèm bảng <code>{ Key, Tier, ExpiresAt, Remaining }</code>; bảng này cũng được lưu ở <code>SlimeUI.KeyInfo</code>, kể cả khi bạn dùng <code>KeySystem</code> bên trong <code>CreateWindow</code>. Nếu key đã lưu hết hạn hoặc bị khoá sang máy khác, cửa sổ key sẽ hiện lý do. Nhập sai 3 lần liên tiếp thì nút Verify bị khoá 5 giây. <code>Validate</code> vẫn được ưu tiên hơn <code>Api</code> nếu khai báo cả hai.</p></div>
+    <div class="en"><p>After a successful check the status line shows the key type and time left (for example <code>Free · 23h 12m left</code>). <code>KeySystem</code> returns <code>true</code> plus a table <code>{ Key, Tier, ExpiresAt, Remaining }</code>; the same table is stored in <code>SlimeUI.KeyInfo</code>, also when the key system runs inside <code>CreateWindow</code>. If the saved key has expired or is locked to another device, the key window shows why. Three wrong keys in a row lock the Verify button for 5 seconds. <code>Validate</code> still wins over <code>Api</code> if you set both.</p></div>
+    <div class="vi"><p>Tuỳ chọn khác: <code>Title</code>, <code>Subtitle</code>, <code>Note</code>, <code>Placeholder</code>, <code>FileName</code> (mặc định <code>SlimeUI/key.txt</code>), <code>Discord</code> và <code>Premium</code> (thêm hàng nút copy link). Nếu người dùng đóng cửa sổ key, <code>CreateWindow</code> trả về một đối tượng rỗng nên code phía sau không bị lỗi.</p></div>
+    <div class="en"><p>Other options: <code>Title</code>, <code>Subtitle</code>, <code>Note</code>, <code>Placeholder</code>, <code>FileName</code> (default <code>SlimeUI/key.txt</code>), <code>Discord</code> and <code>Premium</code> (add a row of copy-link buttons). If the user closes the key window, <code>CreateWindow</code> returns an empty object, so the rest of your script does not error.</p></div>
 </section>
 
 <!-- ================= THEMES ================= -->

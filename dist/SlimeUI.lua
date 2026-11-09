@@ -927,6 +927,77 @@ function SlimeUI:KeySystem(o)
         keys = { keys }
     end
 
+    -- Key server: Api = "https://host/api" or { Url = "...", Hwid = function() return "..." end }
+    local apiUrl, apiHwid, apiTimeout = nil, nil, 10
+    if type(o.Api) == "string" then
+        apiUrl = o.Api
+    elseif type(o.Api) == "table" then
+        apiUrl, apiHwid = o.Api.Url, o.Api.Hwid
+        apiTimeout = tonumber(o.Api.Timeout) or apiTimeout
+    end
+    if type(apiUrl) == "string" then
+        apiUrl = string.gsub(apiUrl, "/+$", "")
+    else
+        apiUrl = nil
+    end
+    local NETWORK_ERROR = "Couldn't reach the key server. Try again."
+    local info -- { Key, Tier, ExpiresAt, Remaining } from the key server
+
+    local function GetHwid()
+        if type(apiHwid) == "function" then
+            local ok, h = pcall(apiHwid)
+            if ok and h ~= nil and tostring(h) ~= "" then
+                return tostring(h)
+            end
+        end
+        if typeof(gethwid) == "function" then
+            local ok, h = pcall(gethwid)
+            if ok and h ~= nil and tostring(h) ~= "" then
+                return tostring(h)
+            end
+        end
+        local ok, id = pcall(function()
+            return game:GetService("RbxAnalyticsService"):GetClientId()
+        end)
+        return ok and id or "unknown"
+    end
+
+    -- Returns valid, message, networkError
+    local function remoteCheck(k)
+        local url = apiUrl .. "/verify?key=" .. HttpService:UrlEncode(k) .. "&hwid=" .. HttpService:UrlEncode(GetHwid())
+        -- Some executors wait a long time on a dead server, so give up after apiTimeout seconds.
+        local finished, ok, body = false, false, nil
+        task.spawn(function()
+            ok, body = pcall(function()
+                return game:HttpGet(url)
+            end)
+            finished = true
+        end)
+        local started = os.clock()
+        while not finished and os.clock() - started < apiTimeout do
+            task.wait(0.05)
+        end
+        if not finished or not ok or type(body) ~= "string" then
+            return false, NETWORK_ERROR, true
+        end
+        local decoded, data = pcall(function()
+            return HttpService:JSONDecode(body)
+        end)
+        if not decoded or type(data) ~= "table" then
+            return false, NETWORK_ERROR, true
+        end
+        if data.valid == true then
+            info = {
+                Key = data.key or k,
+                Tier = data.tier or "free",
+                ExpiresAt = tonumber(data.expiresAt),
+                Remaining = tonumber(data.remaining),
+            }
+            return true
+        end
+        return false, type(data.message) == "string" and data.message or "That key isn't valid. Get a new key and try again."
+    end
+
     local function check(k)
         k = Trim(k)
         if k == "" then
@@ -942,6 +1013,9 @@ function SlimeUI:KeySystem(o)
             end
             return false, msg or "That key isn't valid. Get a new key and try again."
         end
+        if apiUrl then
+            return remoteCheck(k)
+        end
         if keys then
             for _, v in ipairs(keys) do
                 if Trim(v) == k then
@@ -952,13 +1026,38 @@ function SlimeUI:KeySystem(o)
         return false, "That key isn't valid. Get a new key and try again."
     end
 
+    -- "Premium · Lifetime" / "Free · 23h 12m left"
+    local function DescribeInfo(i)
+        local tier = i.Tier == "premium" and "Premium" or "Free"
+        if not i.Remaining then
+            return tier .. " · Lifetime"
+        end
+        local s = math.max(0, math.floor(i.Remaining))
+        local d, h, m = math.floor(s / 86400), math.floor(s % 86400 / 3600), math.floor(s % 3600 / 60)
+        local left
+        if d > 0 then
+            left = d .. "d " .. h .. "h"
+        elseif h > 0 then
+            left = h .. "h " .. m .. "m"
+        else
+            left = math.max(m, 1) .. "m"
+        end
+        return tier .. " · " .. left .. " left"
+    end
+
     -- Key saved from a previous session
+    local savedKey, savedMsg, savedNetwork
     if o.SaveKey ~= false and typeof(isfile) == "function" and typeof(readfile) == "function" then
         local ok, saved = pcall(function()
             return isfile(file) and readfile(file) or nil
         end)
-        if ok and saved and check(saved) then
-            return true
+        if ok and saved and Trim(saved) ~= "" then
+            local valid, msg, network = check(saved)
+            if valid then
+                SlimeUI.KeyInfo = info
+                return true, info
+            end
+            savedKey, savedMsg, savedNetwork = Trim(saved), msg, network
         end
     end
 
@@ -980,7 +1079,17 @@ function SlimeUI:KeySystem(o)
     })
 
     local vp = ViewportSize()
-    local W, H = math.min(380, vp.X - 32), 332
+    -- Optional link row under the main buttons (Discord / Premium)
+    local links = {}
+    if type(o.Discord) == "string" and o.Discord ~= "" then
+        table.insert(links, { Text = "Discord", Icon = "message-circle", Color = Color3.fromRGB(88, 101, 242), Url = o.Discord, Done = "Discord invite copied." })
+    end
+    if type(o.Premium) == "string" and o.Premium ~= "" then
+        table.insert(links, { Text = "Premium", Icon = "crown", Color = Color3.fromRGB(255, 190, 50), Url = o.Premium, Done = "Premium link copied." })
+    end
+    local extra = #links > 0 and 44 or 0
+
+    local W, H = math.min(380, vp.X - 32), 332 + extra
     local fit = math.min(1, (vp.Y - 24) / H)
     local Holder = New("Frame", {
         AnchorPoint = Vector2.new(0.5, 0.5),
@@ -1087,10 +1196,12 @@ function SlimeUI:KeySystem(o)
         Parent = Card,
     })
 
-    local function MakeButton(text, icon, primary, x)
+    -- x: 0 = left half, 0.5 = right half, nil = full width
+    local function MakeButton(text, icon, primary, x, y, h)
+        y, h = y or 238, h or 44
         local B = New("TextButton", {
-            Position = UDim2.new(x, x == 0 and 22 or 5, 0, 238),
-            Size = UDim2.new(0.5, -27, 0, 44),
+            Position = x and UDim2.new(x, x == 0 and 22 or 5, 0, y) or UDim2.fromOffset(22, y),
+            Size = x and UDim2.new(0.5, -27, 0, h) or UDim2.new(1, -44, 0, h),
             BackgroundColor3 = primary and accent or T.Field,
             BackgroundTransparency = primary and 0 or math.max(0, T.FieldT - 0.04),
             AutoButtonColor = false,
@@ -1141,8 +1252,16 @@ function SlimeUI:KeySystem(o)
         VerifyBtn.BackgroundColor3 = AccentColor(T, VerifyGrad)
     end
 
+    local LinkButtons = {}
+    for i, l in ipairs(links) do
+        local x = #links == 2 and (i == 1 and 0 or 0.5) or nil
+        local B, _, Ic = MakeButton(l.Text, l.Icon, false, x, 290, 36)
+        Ic.ImageColor3 = l.Color
+        LinkButtons[B] = l
+    end
+
     Label({
-        Position = UDim2.fromOffset(0, 298),
+        Position = UDim2.fromOffset(0, 298 + extra),
         Size = UDim2.new(1, 0, 0, 16),
         Text = (o.Title or "SlimeUI") .. "  ·  by " .. SlimeUI.Author,
         TextColor3 = T.SubText,
@@ -1173,12 +1292,32 @@ function SlimeUI:KeySystem(o)
     -- Logic
     local done = Instance.new("BindableEvent")
     local finished, busy = false, false
+    local fails = 0 -- wrong keys in a row; 3 locks Verify for a few seconds
 
     local function setStatus(text, color)
         Status.Text = text
         Status.TextColor3 = color or T.SubText
         Status.TextTransparency = 1
         Tween(Status, 0.25, { TextTransparency = 0 })
+    end
+
+    local function copyLink(url, doneText)
+        local copied = pcall(function()
+            setclipboard(url)
+        end)
+        if copied then
+            setStatus(doneText, accent)
+        else
+            setStatus(url, T.Text)
+        end
+    end
+
+    -- Tell the user why the saved key no longer works (key server only)
+    if savedMsg and apiUrl then
+        if savedNetwork then
+            KeyBox.Text = savedKey
+        end
+        setStatus(savedNetwork and savedMsg or ("Saved key: " .. savedMsg), savedNetwork and WARNING or DANGER)
     end
 
     local function close(result)
@@ -1208,10 +1347,14 @@ function SlimeUI:KeySystem(o)
         VerifyIcon.Image = GetIcon("loader-2") or ""
         local spin = TweenService:Create(VerifyIcon, TweenInfo.new(0.8, Enum.EasingStyle.Linear, Enum.EasingDirection.In, -1), { Rotation = 360 })
         spin:Play()
-        local ok, msg = check(KeyBox.Text)
+        local ok, msg, network = check(KeyBox.Text)
         spin:Cancel()
         VerifyIcon.Rotation = 0
+        if finished then
+            return
+        end
         if ok then
+            SlimeUI.KeyInfo = info
             if o.SaveKey ~= false and typeof(writefile) == "function" then
                 pcall(function()
                     EnsureFolder(string.match(file, "^(.*)/") or SlimeUI.Folder)
@@ -1224,13 +1367,18 @@ function SlimeUI:KeySystem(o)
             Tween(VerifyBtn, 0.25, { BackgroundColor3 = SUCCESS })
             InputStroke.Color = SUCCESS
             Tween(InputStroke, 0.2, { Transparency = 0.2 })
-            setStatus("Welcome! Loading " .. (o.Title or "SlimeUI") .. "...", SUCCESS)
-            task.wait(0.8)
+            if info then
+                setStatus(DescribeInfo(info) .. "  ·  Loading...", SUCCESS)
+                task.wait(1.4)
+            else
+                setStatus("Welcome! Loading " .. (o.Title or "SlimeUI") .. "...", SUCCESS)
+                task.wait(0.8)
+            end
             close(true)
         else
             VerifyIcon.Image = GetIcon("check") or ""
             VerifyText.Text = "Verify"
-            setStatus(msg, DANGER)
+            setStatus(msg, network and WARNING or DANGER)
             InputStroke.Color = DANGER
             Tween(InputStroke, 0.15, { Transparency = 0.1 })
             Shake(Holder)
@@ -1239,6 +1387,22 @@ function SlimeUI:KeySystem(o)
                     Tween(InputStroke, 0.4, { Transparency = 1 })
                 end
             end)
+            if not network then
+                fails += 1
+            end
+            if fails >= 3 then
+                fails = 0
+                for s = 5, 1, -1 do
+                    if finished then
+                        return
+                    end
+                    VerifyText.Text = "Wait " .. s .. "s"
+                    task.wait(1)
+                end
+                if not finished then
+                    VerifyText.Text = "Verify"
+                end
+            end
             busy = false
         end
     end
@@ -1271,6 +1435,11 @@ function SlimeUI:KeySystem(o)
             setStatus("Get your key at: " .. o.Link, T.Text)
         end
     end)
+    for B, l in pairs(LinkButtons) do
+        Connect(B.MouseButton1Click, function()
+            copyLink(l.Url, l.Done)
+        end)
+    end
     Connect(CloseBtn.MouseButton1Click, function()
         close(false)
     end)
@@ -1283,7 +1452,7 @@ function SlimeUI:KeySystem(o)
 
     local result = done.Event:Wait()
     done:Destroy()
-    return result
+    return result, result and info or nil
 end
 
 -- >>> src/Window.lua

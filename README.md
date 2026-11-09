@@ -23,7 +23,7 @@ SlimeUI is a UI library for Roblox scripts. You build a full script hub (tabs, t
 - **Simple API.** Each element is one line, or a table when you need more options. No setup beyond `CreateWindow`.
 - **9 themes, plus your own.** `Glass`, `Slime`, `Dark`, `Light`, `Midnight`, `Ocean`, `Sakura`, `Amethyst` and `Sunset`, switchable at runtime. Add your own with `SlimeUI:AddTheme`.
 - **The Slime theme.** Green-to-cyan glass with a wavy slime coat on the top edge, dripping slime, glossy rising bubbles and a jelly bounce.
-- **Built-in essentials.** Key system, notifications, a Settings tab, flag-based config saving, and 818 Lucide icons by name.
+- **Built-in essentials.** Key system (fixed keys, your own check, or a key server with HWID lock and time left), notifications, a Settings tab, flag-based config saving, and 818 Lucide icons by name.
 - **Window controls that feel native.** Collapse into a glass bar at the top of the screen, resize from the corner arc, move from the bar underneath.
 - **Mobile ready.** Compact layout on small or touch screens, plus a draggable floating toggle button.
 

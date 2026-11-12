@@ -1,5 +1,5 @@
 --[[
-    SlimeUI v1.2.0
+    SlimeUI v1.3.0
     UI library for Roblox scripts
 
     Author:  SlimexDev
@@ -15,7 +15,7 @@
 -- Core: library table, Roblox services, shared constants
 ---------------------------------------------------------------------
 local SlimeUI = {
-    Version = "1.2.0",
+    Version = "1.3.0",
     Author = "SlimexDev",
     -- Change the two lines below if your GitHub repository has a different name
     Repository = "https://github.com/SlimexDev/SlimeUI",
@@ -387,6 +387,9 @@ local Themes = {
     }),
 }
 local ThemeNames = { "Glass", "Slime", "Dark", "Light", "Midnight", "Ocean", "Sakura", "Amethyst", "Sunset" }
+-- Used when CreateWindow / KeySystem get no Theme: black and solid
+local DefaultTheme = "Midnight"
+SlimeUI.DefaultTheme = DefaultTheme
 SlimeUI.Themes = Themes
 SlimeUI.ThemeNames = ThemeNames
 
@@ -705,7 +708,35 @@ Null = setmetatable({}, {
 ---------------------------------------------------------------------
 -- Theme engine: every color property is registered so themes can change at runtime
 ---------------------------------------------------------------------
-local Theme = { Name = "Glass", Current = Themes.Glass, Objects = {}, Hooks = {}, AccentOverride = nil }
+local Theme = { Name = DefaultTheme, Current = Themes[DefaultTheme], Objects = {}, Hooks = {}, AccentOverride = nil, Opacity = 1 }
+
+-- Reads an Opacity / Solid option: 0 = the theme's own glass, 1 = solid. Values above 1 are percent.
+local function ParseOpacity(opacity, solid, fallback)
+    local o = tonumber(opacity)
+    if o == nil then
+        if solid == true then
+            o = 1
+        elseif solid == false then
+            o = 0
+        else
+            o = fallback or 1
+        end
+    elseif o > 1 then
+        o = o / 100
+    end
+    return math.clamp(o, 0, 1)
+end
+
+-- Copy of a theme with the window opacity applied: the window and menu
+-- backgrounds lose their transparency as opacity goes from 0 to 1.
+local function ThemeCopy(name, opacity)
+    local base = Themes[name] or Themes[DefaultTheme]
+    local T = table.clone(base)
+    local o = opacity or Theme.Opacity
+    T.WindowT = (base.WindowT or 0) * (1 - o)
+    T.MenuT = (base.MenuT or 0) * (1 - o)
+    return T
+end
 
 local function Bind(inst, map)
     Theme.Objects[inst] = map
@@ -1061,7 +1092,7 @@ function SlimeUI:KeySystem(o)
         end
     end
 
-    local T = Themes[o.Theme or "Glass"] or Themes.Glass
+    local T = ThemeCopy(Themes[o.Theme or ""] and o.Theme or DefaultTheme, ParseOpacity(o.Opacity, o.Solid, 1))
     local accent = (typeof(o.Accent) == "Color3" and o.Accent) or Accents[o.Accent or ""] or T.Accent
     local conns = {}
     local function Connect(sig, fn)
@@ -1483,15 +1514,19 @@ function SlimeUI:CreateWindow(opts)
         ks.Logo = ks.Logo or opts.Logo
         ks.Title = ks.Title or opts.Title
         ks.Accent = ks.Accent or opts.Accent
+        if ks.Opacity == nil and ks.Solid == nil then
+            ks.Opacity, ks.Solid = opts.Opacity, opts.Solid
+        end
         if not self:KeySystem(ks) then
             return Null
         end
     end
 
     -- Theme
-    local themeName = (opts.Theme and Themes[opts.Theme]) and opts.Theme or "Glass"
+    local themeName = (opts.Theme and Themes[opts.Theme]) and opts.Theme or DefaultTheme
     Theme.Name = themeName
-    Theme.Current = table.clone(Themes[themeName])
+    Theme.Opacity = ParseOpacity(opts.Opacity, opts.Solid, 1)
+    Theme.Current = ThemeCopy(themeName)
     Theme.Objects = {}
     Theme.Hooks = {}
     Theme.AccentOverride = nil
@@ -1524,6 +1559,7 @@ function SlimeUI:CreateWindow(opts)
         Zoomed = false,
         UserScale = 1,
         BlurEnabled = opts.Blur == true,
+        Opacity = Theme.Opacity,
         _conns = {},
         _binding = false,
     }
@@ -1545,18 +1581,34 @@ function SlimeUI:CreateWindow(opts)
     end
     Window.Compact = compact
 
-    local L = compact and {
-        SideW = 66, TabH = 46, RowH = 48, RowDescH = 60, Track = 120, Field = 140, Drop = 140, Notify = 290,
-    } or {
-        SideW = 214, TabH = 34, RowH = 44, RowDescH = 58, Track = 168, Field = 180, Drop = 170, Notify = 330,
-    }
-    local BaseSize = opts.Size or Vector2.new(780, 500)
-    local ContentX = 8 + L.SideW + 18
+    -- Column layout: a narrow window without a sidebar, docked to the left edge,
+    -- tabs in a bar under the title and Settings behind a gear button
+    local column = opts.Layout == "Column"
+    Window.Layout = column and "Column" or "Sidebar"
+    Window.Docked = column and opts.Dock ~= false
+
+    local L
+    if column then
+        L = compact and {
+            SideW = 0, TabH = 36, RowH = 48, RowDescH = 60, Track = 0, Field = 118, Drop = 116, Notify = 290,
+        } or {
+            SideW = 0, TabH = 30, RowH = 44, RowDescH = 58, Track = 0, Field = 120, Drop = 120, Notify = 320,
+        }
+    else
+        L = compact and {
+            SideW = 66, TabH = 46, RowH = 48, RowDescH = 60, Track = 120, Field = 140, Drop = 140, Notify = 290,
+        } or {
+            SideW = 214, TabH = 34, RowH = 44, RowDescH = 58, Track = 168, Field = 180, Drop = 170, Notify = 330,
+        }
+    end
+    local BaseSize = opts.Size or (column and Vector2.new(300, 470) or Vector2.new(780, 500))
+    local ContentX = column and 14 or (8 + L.SideW + 18)
+    local ColHeadH = 58
 
     local function TargetSize()
         local v = ViewportSize()
         local s = Window.Zoomed and BaseSize * 1.15 or BaseSize
-        if compact or Window.Zoomed then
+        if compact or column or Window.Zoomed then
             s = Vector2.new(math.min(s.X, v.X - 20), math.min(s.Y, v.Y - 20))
         end
         return s
@@ -1931,6 +1983,86 @@ function SlimeUI:CreateWindow(opts)
     end)
 
     -----------------------------------------------------------------
+    -- Column layout header: lights, logo + title, gear; tab bar below
+    -----------------------------------------------------------------
+    local ColTabs, GearBtn, GearIcon
+    if column then
+        Sidebar.Visible = false
+        SearchFrame.Visible = false
+        Lights.Parent = Main
+        Lights.Position = UDim2.fromOffset(18, 23)
+        DragZone.Size = UDim2.new(1, 0, 0, ColHeadH)
+        local bx = 18 + 13 + lightGap * 2 + 14
+        local ColBrand = New("Frame", {
+            Position = UDim2.fromOffset(bx, 11),
+            Size = UDim2.new(1, -bx - 54, 0, 38),
+            BackgroundTransparency = 1,
+            Parent = Main,
+        })
+        MakeLogo(LogoImage, {
+            AnchorPoint = Vector2.new(0, 0.5),
+            Position = UDim2.new(0, 0, 0.5, 0),
+            Size = UDim2.fromOffset(28, 28),
+            Parent = ColBrand,
+        })
+        Bind(Label({
+            Position = UDim2.fromOffset(36, 2),
+            Size = UDim2.new(1, -36, 0, 18),
+            Text = Window.Title,
+            TextSize = 15,
+            FontFace = F(W_BOLD),
+            TextTruncate = Enum.TextTruncate.AtEnd,
+            Parent = ColBrand,
+        }), { TextColor3 = "Text" })
+        Bind(Label({
+            Position = UDim2.fromOffset(36, 20),
+            Size = UDim2.new(1, -36, 0, 15),
+            Text = Window.Subtitle,
+            TextSize = 12,
+            FontFace = F(W_MED),
+            TextTruncate = Enum.TextTruncate.AtEnd,
+            Parent = ColBrand,
+        }), { TextColor3 = "SubText" })
+
+        GearBtn = New("TextButton", {
+            Name = "Settings",
+            AnchorPoint = Vector2.new(1, 0),
+            Position = UDim2.new(1, -12, 0, compact and 11 or 13),
+            Size = UDim2.fromOffset(compact and 36 or 32, compact and 36 or 32),
+            AutoButtonColor = false,
+            Text = "",
+            ZIndex = 3,
+            Visible = opts.SettingsTab ~= false,
+            Parent = Main,
+        }, { Corner(10) })
+        GearIcon = IconLabel("settings", {
+            AnchorPoint = Vector2.new(0.5, 0.5),
+            Position = UDim2.fromScale(0.5, 0.5),
+            Size = UDim2.fromOffset(17, 17),
+            Parent = GearBtn,
+        })
+
+        ColTabs = New("Frame", {
+            Name = "TabBar",
+            Position = UDim2.fromOffset(8, ColHeadH),
+            Size = UDim2.new(1, -16, 0, L.TabH + 6),
+            Visible = false,
+            Parent = Main,
+        }, { Corner(12) })
+        Bind(ColTabs, { BackgroundColor3 = "Field", BackgroundTransparency = "FieldT" })
+        TabList.Parent = ColTabs
+        TabList.Position = UDim2.fromOffset(3, 3)
+        TabList.Size = UDim2.new(1, -6, 1, -6)
+        TabList.ScrollingEnabled = false
+        Indicator.Size = UDim2.new(0, 0, 1, 0)
+        Bind(Indicator, { BackgroundColor3 = "SegPill" })
+        local ic = Indicator:FindFirstChildOfClass("UICorner")
+        if ic then
+            ic.CornerRadius = UDim.new(0, 9)
+        end
+    end
+
+    -----------------------------------------------------------------
     -- Content
     -----------------------------------------------------------------
     local headerRight = compact and 186 or 20
@@ -1958,6 +2090,24 @@ function SlimeUI:CreateWindow(opts)
         ClipsDescendants = true,
         Parent = Main,
     })
+    if column then
+        Header.Visible = false
+        SubHeader.Visible = false
+    end
+
+    -- Column layout: the page area starts under the tab bar when it is shown
+    local colTabCount = 0
+    local function LayoutColumn()
+        if not column then
+            return
+        end
+        local bar = colTabCount > 1 and not Window.Minimized
+        ColTabs.Visible = bar
+        Pages.Visible = not Window.Minimized
+        local top = bar and (ColHeadH + L.TabH + 6 + 6) or (ColHeadH - 4)
+        Pages.Position = UDim2.fromOffset(8, top)
+        Pages.Size = UDim2.new(1, -16, 1, -top - 4)
+    end
 
     local NotifyHolder = New("Frame", {
         AnchorPoint = Vector2.new(1, 0),
@@ -2141,16 +2291,36 @@ function SlimeUI:CreateWindow(opts)
         if Grip then
             Grip.Visible = Window.Visible and not mini
         end
-        MiniBrand.Visible = mini and not compact
-        if compact then
+        MiniBrand.Visible = mini and not compact and not column
+        if compact and not column then
             SearchFrame.Visible = not mini
         end
+        LayoutColumn()
         Tween(SubHeader, mini and 0.15 or 0.35, { TextTransparency = mini and 1 or 0 })
     end
 
     local function FullSize()
         local s = TargetSize()
-        return UDim2.fromOffset(s.X, Window.Minimized and 58 or s.Y)
+        return UDim2.fromOffset(s.X, Window.Minimized and (column and ColHeadH or 58) or s.Y)
+    end
+
+    -- Column layout: position against the left edge of the screen
+    local function DockPos(yOffset)
+        local vp = Gui.AbsoluteSize
+        local w = FullSize().X.Offset * FitScale()
+        return UDim2.new(0.5, -vp.X / 2 + w / 2 + 12, 0.5, yOffset or 0)
+    end
+
+    -- After a drag or resize: dock again when the window was left near the left edge
+    local function SnapDock()
+        if not column or not Window.Visible then
+            return
+        end
+        local left = Holder.AbsolutePosition.X - Gui.AbsolutePosition.X
+        Window.Docked = left < 48
+        if Window.Docked then
+            Tween(Holder, 0.35, { Position = DockPos(Holder.Position.Y.Offset) }, Enum.EasingStyle.Quint)
+        end
     end
 
     -- Keep the window on screen (e.g. after the resolution changes while hidden)
@@ -2173,12 +2343,19 @@ function SlimeUI:CreateWindow(opts)
             return
         end
         local target = FullSize()
+        local docked = column and Window.Docked
         if animated then
             Tween(Holder, 0.5, { Size = target })
             Tween(Scale, 0.5, { Scale = FitScale() })
+            if docked then
+                Tween(Holder, 0.5, { Position = DockPos(Holder.Position.Y.Offset) })
+            end
         else
             Holder.Size = target
             Scale.Scale = FitScale()
+            if docked then
+                Holder.Position = DockPos(Holder.Position.Y.Offset)
+            end
         end
     end
 
@@ -2362,7 +2539,11 @@ function SlimeUI:CreateWindow(opts)
                 Holder.Size = IslandStartSize(s)
                 Main.GroupTransparency = 1
                 Edge.Transparency = 0.2
-                Tween(Holder, 0.6, { Position = ClampPos(self._restorePos), Size = FullSize() }, Enum.EasingStyle.Quint)
+                local back = ClampPos(self._restorePos)
+                if column and self.Docked then
+                    back = DockPos(back.Y.Offset)
+                end
+                Tween(Holder, 0.6, { Position = back, Size = FullSize() }, Enum.EasingStyle.Quint)
                 Tween(Edge, 0.5, { Transparency = 0 })
                 task.delay(0.1, function()
                     if self.Visible then
@@ -2468,9 +2649,24 @@ function SlimeUI:CreateWindow(opts)
             return
         end
         Theme.Name = name
-        Theme.Current = table.clone(Themes[name])
+        Theme.Current = ThemeCopy(name)
         Theme.AccentOverride = nil
         ApplyTheme(true)
+    end
+
+    -- 0 = the theme's own glass look, 1 = solid (nothing shows through)
+    function Window:SetOpacity(o)
+        o = ParseOpacity(o, nil, Theme.Opacity)
+        Theme.Opacity = o
+        self.Opacity = o
+        local base = Themes[Theme.Name]
+        Theme.Current.WindowT = (base.WindowT or 0) * (1 - o)
+        Theme.Current.MenuT = (base.MenuT or 0) * (1 - o)
+        ApplyTheme(true)
+    end
+
+    function Window:SetSolid(on)
+        self:SetOpacity(on == false and 0 or 1)
     end
 
     function Window:SetAccent(accent)
@@ -2523,6 +2719,7 @@ function SlimeUI:CreateWindow(opts)
             if input.UserInputState == Enum.UserInputState.End then
                 dragging = false
                 c:Disconnect()
+                task.delay(0.13, SnapDock)
             end
         end)
     end
@@ -2543,7 +2740,7 @@ function SlimeUI:CreateWindow(opts)
 
     -- macOS 26 style handles: an arc around the bottom-right corner (resize)
     -- and a bar under the window (drag to move)
-    local MinSize = compact and Vector2.new(420, 260) or Vector2.new(600, 380)
+    local MinSize = column and Vector2.new(250, 280) or (compact and Vector2.new(420, 260) or Vector2.new(600, 380))
     Grip = New("Frame", {
         Name = "WindowHandles",
         Size = UDim2.fromScale(1, 1),
@@ -2651,6 +2848,7 @@ function SlimeUI:CreateWindow(opts)
                         cn:Disconnect()
                         resizing = nil
                         GripGlow(false)
+                        SnapDock()
                     end
                 end)
             end)
@@ -2890,11 +3088,18 @@ function SlimeUI:CreateWindow(opts)
             return
         end
         local target = { Position = cur._button.Position, BackgroundTransparency = Theme.Current.SelectT }
+        if column then
+            target.Size = cur._button.Size
+            target.BackgroundTransparency = Theme.Current.SegPillT
+        end
         if animated then
             Tween(Indicator, 0.45, target, Enum.EasingStyle.Quint)
         else
             Indicator.Position = target.Position
             Indicator.BackgroundTransparency = target.BackgroundTransparency
+            if target.Size then
+                Indicator.Size = target.Size
+            end
         end
     end
     Hook(function()
@@ -2906,6 +3111,24 @@ function SlimeUI:CreateWindow(opts)
         table.sort(sorted, function(a, b)
             return a._order < b._order
         end)
+        if column then
+            -- Horizontal tab bar; Settings lives behind the gear button
+            local shown = {}
+            for _, t in ipairs(sorted) do
+                if t._button.Visible then
+                    table.insert(shown, t)
+                end
+            end
+            local n = #shown
+            for i, t in ipairs(shown) do
+                t._button.Position = UDim2.new((i - 1) / n, 1, 0, 0)
+                t._button.Size = UDim2.new(1 / n, -2, 1, 0)
+            end
+            colTabCount = n
+            LayoutColumn()
+            MoveIndicator(false)
+            return
+        end
         local y = 0
         for _, t in ipairs(sorted) do
             if t._button.Visible then
@@ -2945,6 +3168,44 @@ function SlimeUI:CreateWindow(opts)
         end
     end
     Connect(SearchInput:GetPropertyChangedSignal("Text"), ApplySearch)
+
+    -- Column layout: the gear button opens Settings, a second click goes back
+    local function UpdateGear()
+        if not GearBtn then
+            return
+        end
+        local T = Theme.Current
+        local on = Window.Current ~= nil and Window.Current._settings == true
+        GearBtn.BackgroundColor3 = on and T.SegPill or T.Field
+        Tween(GearBtn, 0.2, { BackgroundTransparency = on and T.SegPillT or T.FieldT })
+        GearIcon.ImageColor3 = on and T.Accent or T.Text
+    end
+    if column then
+        Hook(function()
+            UpdateGear()
+        end)
+        Connect(GearBtn.MouseButton1Click, function()
+            if Window.Minimized then
+                Window:Minimize(false)
+            end
+            local cur = Window.Current
+            if cur and cur._settings then
+                local back = Window._lastTab
+                if not back then
+                    for _, t in ipairs(Window.Tabs) do
+                        if not t._settings and (not back or t._order < back._order) then
+                            back = t
+                        end
+                    end
+                end
+                if back then
+                    Window:SelectTab(back)
+                end
+            elseif Window._settingsTab then
+                Window:SelectTab(Window._settingsTab)
+            end
+        end)
+    end
 
     function Window:SelectTab(tab)
         if type(tab) == "string" then
@@ -2989,6 +3250,12 @@ function SlimeUI:CreateWindow(opts)
         Tween(tab._page, 0.5, { Position = UDim2.fromOffset(0, 0) })
         tab._iconScale.Scale = 0.75
         Tween(tab._iconScale, 0.5, { Scale = 1 }, Enum.EasingStyle.Back)
+        if column then
+            if not tab._settings then
+                self._lastTab = tab
+            end
+            UpdateGear()
+        end
     end
 
     -----------------------------------------------------------------
@@ -3066,6 +3333,7 @@ function SlimeUI:CreateWindow(opts)
         local tab = section.Tab
         local order = #section.Rows + 1
         local height = r.Height or (r.Description and L.RowDescH or L.RowH)
+        local top = r.Description or r.Stacked
         local Row = New("Frame", {
             Size = UDim2.new(1, 0, 0, height),
             BackgroundTransparency = 1,
@@ -3101,7 +3369,7 @@ function SlimeUI:CreateWindow(opts)
         if r.Icon and GetIcon(r.Icon) then
             Bind(IconLabel(r.Icon, {
                 AnchorPoint = Vector2.new(0, 0.5),
-                Position = UDim2.new(0, 14, 0.5, 0),
+                Position = r.Stacked and UDim2.fromOffset(14, 20) or UDim2.new(0, 14, 0.5, 0),
                 Size = UDim2.fromOffset(18, 18),
                 Parent = Row,
             }), { ImageColor3 = "SubText" })
@@ -3110,8 +3378,8 @@ function SlimeUI:CreateWindow(opts)
         if r.Name then
             local right = r.Right or 160
             Bind(Label({
-                Position = UDim2.fromOffset(textX, r.Description and 10 or 0),
-                Size = UDim2.new(1, -right - textX - 14, 0, r.Description and 20 or height),
+                Position = UDim2.fromOffset(textX, top and 10 or 0),
+                Size = UDim2.new(1, -right - textX - 14, 0, top and 20 or height),
                 Text = r.Name,
                 TextSize = 14,
                 FontFace = F(W_MED),
@@ -3255,10 +3523,19 @@ function SlimeUI:CreateWindow(opts)
             decimals = #incStr - dot
         end
 
-        local Row = NewRow(self, { Name = o.Name, Description = o.Description, Icon = o.Icon, Right = L.Track + 96 })
+        local Row
+        if column then
+            -- Narrow window: name and value on top, full-width track underneath
+            Row = NewRow(self, {
+                Name = o.Name, Description = o.Description, Icon = o.Icon, Right = 70, Stacked = true,
+                Height = (o.Description and 78 or 62) + (compact and 4 or 0),
+            })
+        else
+            Row = NewRow(self, { Name = o.Name, Description = o.Description, Icon = o.Icon, Right = L.Track + 96 })
+        end
         local ValueBox = New("TextBox", {
             AnchorPoint = Vector2.new(1, 0.5),
-            Position = UDim2.new(1, -14, 0.5, 0),
+            Position = column and UDim2.new(1, -14, 0, 20) or UDim2.new(1, -14, 0.5, 0),
             Size = UDim2.fromOffset(58, 26),
             Text = "",
             TextSize = 13,
@@ -3269,8 +3546,8 @@ function SlimeUI:CreateWindow(opts)
         Bind(ValueBox, { BackgroundColor3 = "Field", BackgroundTransparency = "FieldT", TextColor3 = "Text" })
         local Track = New("Frame", {
             AnchorPoint = Vector2.new(1, 0.5),
-            Position = UDim2.new(1, -84, 0.5, 0),
-            Size = UDim2.fromOffset(L.Track, 5),
+            Position = column and UDim2.new(1, -24, 1, compact and -18 or -16) or UDim2.new(1, -84, 0.5, 0),
+            Size = column and UDim2.new(1, -48, 0, 5) or UDim2.fromOffset(L.Track, 5),
             BorderSizePixel = 0,
             Parent = Row,
         }, { Corner("full") })
@@ -4023,6 +4300,7 @@ function SlimeUI:CreateWindow(opts)
         local Tab = setmetatable({
             Name = o.Name or ("Tab " .. tabCount),
             Description = o.Description or "",
+            _settings = o._settings == true,
             Sections = {},
             Elements = {},
             _order = o._order or tabCount,
@@ -4039,7 +4317,27 @@ function SlimeUI:CreateWindow(opts)
         }, { Corner(11) })
         Bind(Button, { BackgroundColor3 = "Hover" })
 
-        local iconSize = compact and 32 or 24
+        local iconSize = column and (compact and 20 or 18) or (compact and 32 or 24)
+        local Inner
+        if column then
+            Button.Visible = not o._settings
+            Inner = New("Frame", {
+                AnchorPoint = Vector2.new(0.5, 0.5),
+                Position = UDim2.fromScale(0.5, 0.5),
+                Size = UDim2.new(0, 0, 1, 0),
+                AutomaticSize = Enum.AutomaticSize.X,
+                BackgroundTransparency = 1,
+                ZIndex = 2,
+                Parent = Button,
+            }, {
+                New("UIListLayout", {
+                    FillDirection = Enum.FillDirection.Horizontal,
+                    VerticalAlignment = Enum.VerticalAlignment.Center,
+                    Padding = UDim.new(0, 6),
+                    SortOrder = Enum.SortOrder.LayoutOrder,
+                }),
+            })
+        end
         local IconBox = New("Frame", {
             AnchorPoint = compact and Vector2.new(0.5, 0.5) or Vector2.new(0, 0.5),
             Position = compact and UDim2.fromScale(0.5, 0.5) or UDim2.new(0, 7, 0.5, 0),
@@ -4047,9 +4345,12 @@ function SlimeUI:CreateWindow(opts)
             BackgroundColor3 = color,
             Parent = Button,
         }, {
-            Corner(compact and 9 or 7),
+            Corner(column and 6 or (compact and 9 or 7)),
             New("UIGradient", { Rotation = 90, Color = ColorSequence.new(WHITE, Color3.fromRGB(200, 200, 200)) }),
         })
+        if Inner then
+            IconBox.Parent = Inner
+        end
         local IconScale = New("UIScale", { Parent = IconBox })
         local img = GetIcon(o.Icon)
         if img then
@@ -4073,7 +4374,17 @@ function SlimeUI:CreateWindow(opts)
                 Parent = IconBox,
             })
         end
-        if not compact then
+        if column then
+            Tab._name = Bind(Label({
+                Size = UDim2.new(0, 0, 1, 0),
+                AutomaticSize = Enum.AutomaticSize.X,
+                Text = Tab.Name,
+                TextSize = compact and 14 or 13,
+                FontFace = F(W_MED),
+                LayoutOrder = 2,
+                Parent = Inner,
+            }), { TextColor3 = "Text" })
+        elseif not compact then
             Tab._name = Bind(Label({
                 Position = UDim2.fromOffset(40, 0),
                 Size = UDim2.new(1, -46, 1, 0),
@@ -4196,7 +4507,8 @@ function SlimeUI:CreateWindow(opts)
             local Btn = New("TextButton", {
                 Name = "ToggleButton",
                 AnchorPoint = Vector2.new(0.5, 0.5),
-                Position = self._toggleBtnPos or UDim2.new(0, 18 + size / 2, 0.5, 0),
+                Position = self._toggleBtnPos
+                    or (column and UDim2.new(1, -(18 + size / 2), 0.5, 0) or UDim2.new(0, 18 + size / 2, 0.5, 0)),
                 Size = UDim2.fromOffset(size, size),
                 BackgroundColor3 = Color3.fromRGB(18, 20, 28),
                 BackgroundTransparency = 0.2,
@@ -4273,6 +4585,7 @@ function SlimeUI:CreateWindow(opts)
             _order = 1e6,
             _settings = true,
         })
+        Window._settingsTab = S
         local Look = S:Section("Appearance")
         local accentDrop
         Look:Dropdown({
@@ -4304,6 +4617,18 @@ function SlimeUI:CreateWindow(opts)
             Default = currentAccent,
             Callback = function(v)
                 Window:SetAccent(v)
+            end,
+        })
+        Look:Slider({
+            Name = "Window opacity",
+            Description = column and nil or "100% is solid, lower lets the game show through",
+            Min = 0,
+            Max = 100,
+            Increment = 5,
+            Default = math.floor(Theme.Opacity * 100 + 0.5),
+            Suffix = "%",
+            Callback = function(v)
+                Window:SetOpacity(v / 100)
             end,
         })
         Look:Toggle({
@@ -4555,6 +4880,10 @@ function SlimeUI:CreateWindow(opts)
     local function Open()
         if Window.Destroyed then
             return
+        end
+        if column and Window.Docked then
+            Holder.Size = FullSize()
+            Holder.Position = DockPos(0)
         end
         Window:SetVisible(true)
         if Window.ToggleButtonEnabled then

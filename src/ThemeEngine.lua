@@ -1,7 +1,35 @@
 ---------------------------------------------------------------------
 -- Theme engine: every color property is registered so themes can change at runtime
 ---------------------------------------------------------------------
-local Theme = { Name = "Glass", Current = Themes.Glass, Objects = {}, Hooks = {}, AccentOverride = nil }
+local Theme = { Name = DefaultTheme, Current = Themes[DefaultTheme], Objects = {}, Hooks = {}, AccentOverride = nil, Opacity = 1 }
+
+-- Reads an Opacity / Solid option: 0 = the theme's own glass, 1 = solid. Values above 1 are percent.
+local function ParseOpacity(opacity, solid, fallback)
+    local o = tonumber(opacity)
+    if o == nil then
+        if solid == true then
+            o = 1
+        elseif solid == false then
+            o = 0
+        else
+            o = fallback or 1
+        end
+    elseif o > 1 then
+        o = o / 100
+    end
+    return math.clamp(o, 0, 1)
+end
+
+-- Copy of a theme with the window opacity applied: the window and menu
+-- backgrounds lose their transparency as opacity goes from 0 to 1.
+local function ThemeCopy(name, opacity)
+    local base = Themes[name] or Themes[DefaultTheme]
+    local T = table.clone(base)
+    local o = opacity or Theme.Opacity
+    T.WindowT = (base.WindowT or 0) * (1 - o)
+    T.MenuT = (base.MenuT or 0) * (1 - o)
+    return T
+end
 
 local function Bind(inst, map)
     Theme.Objects[inst] = map

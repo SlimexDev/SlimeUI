@@ -19,12 +19,13 @@ SlimeUI is a UI library for Roblox scripts. You build a full script hub (tabs, t
 
 ## Why SlimeUI
 
-- **Polished look.** Translucent windows, glowing edges, and smooth animations on every control.
+- **Polished look.** Solid black by default, or turn the opacity down for translucent glass. Glowing edges and smooth animations on every control.
 - **Simple API.** Each element is one line, or a table when you need more options. No setup beyond `CreateWindow`.
 - **9 themes, plus your own.** `Glass`, `Slime`, `Dark`, `Light`, `Midnight`, `Ocean`, `Sakura`, `Amethyst` and `Sunset`, switchable at runtime. Add your own with `SlimeUI:AddTheme`.
 - **The Slime theme.** Green-to-cyan glass with a wavy slime coat on the top edge, dripping slime, glossy rising bubbles and a jelly bounce.
 - **Built-in essentials.** Key system (fixed keys, your own check, or a key server with HWID lock and time left), notifications, a Settings tab, flag-based config saving, and 818 Lucide icons by name.
 - **Window controls that feel native.** Collapse into a glass bar at the top of the screen, resize from the corner arc, move from the bar underneath.
+- **Two layouts.** The full window with a sidebar, or a narrow `Column` window docked to the left edge for games that need only one or a few tabs.
 - **Mobile ready.** Compact layout on small or touch screens, plus a draggable floating toggle button.
 
 <table>
@@ -48,6 +49,8 @@ local SlimeUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Slime
 local SlimeUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/SlimexDev/SlimeUI/v1.2.0/dist/SlimeUI.lua"))()```
 
 ## Quick start
+
+With no `Theme`, the window uses `Midnight` (black). Windows are solid by default; set `Opacity` between `0` (glass) and `1` (solid), or call `Window:SetOpacity(v)` later.
 
 ```lua
 local Window = SlimeUI:CreateWindow({
@@ -125,3 +128,25 @@ Pushing a tag such as `v1.0.1` creates a GitHub release with `SlimeUI.lua` attac
 - Project layout inspired by [WindUI](https://github.com/Footagesus/WindUI)
 
 SlimeUI is released under the [MIT License](LICENSE).
+
+## Column layout
+
+For games that need one tab or only a few, use the narrow column window. It docks to the left edge of the screen (drag it away to undock, drop it near the edge to dock again), shows tabs in a bar under the title when there are two or more, and keeps Settings behind the gear button.
+
+```lua
+local Window = SlimeUI:CreateWindow({
+    Title = "Blox Farm",
+    Layout = "Column",            -- "Sidebar" (default) or "Column"
+    Size = Vector2.new(300, 470), -- optional
+    Dock = true,                  -- false = start in the middle
+})
+
+local Farm = Window:Tab("Farm", "swords")
+Farm:Toggle("Auto farm", false)
+
+local Player = Window:Tab("Player", "user") -- with 2+ tabs the tab bar appears
+Player:Slider("Walk speed", 16, 100, 16)
+```
+
+Keep tab names short; the bar fits up to about four tabs.
+

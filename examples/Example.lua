@@ -7,6 +7,8 @@ local Window = SlimeUI:CreateWindow({
     Title = "SlimeUI",
     Subtitle = "by SlimexDev",
     Theme = "Slime",                      -- Glass, Slime, Dark, Light, Midnight, Ocean, Sakura, Amethyst, Sunset
+    Opacity = 1,                          -- 1 = solid (default), 0 = glass
+    -- Layout = "Column",                 -- narrow window docked to the left, for 1-4 tabs
     ToggleKey = Enum.KeyCode.RightShift,
     KeySystem = {
         Key = { "SLIME-DEMO-KEY" },

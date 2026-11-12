@@ -143,7 +143,7 @@ function SlimeUI:KeySystem(o)
         end
     end
 
-    local T = Themes[o.Theme or "Glass"] or Themes.Glass
+    local T = ThemeCopy(Themes[o.Theme or ""] and o.Theme or DefaultTheme, ParseOpacity(o.Opacity, o.Solid, 1))
     local accent = (typeof(o.Accent) == "Color3" and o.Accent) or Accents[o.Accent or ""] or T.Accent
     local conns = {}
     local function Connect(sig, fn)

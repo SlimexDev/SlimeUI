@@ -158,6 +158,9 @@ local Themes = {
     }),
 }
 local ThemeNames = { "Glass", "Slime", "Dark", "Light", "Midnight", "Ocean", "Sakura", "Amethyst", "Sunset" }
+-- Used when CreateWindow / KeySystem get no Theme: black and solid
+local DefaultTheme = "Midnight"
+SlimeUI.DefaultTheme = DefaultTheme
 SlimeUI.Themes = Themes
 SlimeUI.ThemeNames = ThemeNames
 

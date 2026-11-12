@@ -43,10 +43,13 @@ SlimeUI is a UI library for Roblox scripts. You build a full script hub (tabs, t
 
 ```lua
 local SlimeUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/SlimexDev/SlimeUI/main/dist/SlimeUI.lua"))()
+```
 
+Or pin a version:
 
 ```lua
-local SlimeUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/SlimexDev/SlimeUI/v1.2.0/dist/SlimeUI.lua"))()```
+local SlimeUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/SlimexDev/SlimeUI/v1.3.0/dist/SlimeUI.lua"))()
+```
 
 ## Quick start
 

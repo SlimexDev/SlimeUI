@@ -168,6 +168,44 @@ body { font: 13px/1.35 "Inter", "Segoe UI", system-ui, sans-serif; color: var(--
 .rail .ti { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; background: linear-gradient(180deg, rgba(255,255,255,.35), rgba(0,0,0,.12)), var(--c); }
 .rail .ti.on { box-shadow: 0 0 0 4px rgba(var(--tint), .18); }
 .rail .ti svg { width: 16px; height: 16px; color: #fff; }
+
+/* opacity comparison */
+.blocks i { position: absolute; border-radius: 4px; box-shadow: inset -8px -8px 0 rgba(0,0,0,.18), inset 3px 3px 0 rgba(255,255,255,.25); }
+.ops { position: relative; z-index: 2; display: flex; gap: 18px; align-items: flex-start; }
+.opw { width: 222px; padding: 8px; border-radius: 20px; position: relative; overflow: hidden;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.5), inset 0 0 0 1.2px rgba(200,255,230,.28); }
+.opw::before { content: ""; position: absolute; inset: 0 0 60% 0; background: linear-gradient(180deg, rgba(255,255,255,.1), transparent); pointer-events: none; }
+.chead { position: relative; z-index: 2; display: flex; align-items: center; gap: 10px; padding: 6px 6px 10px; }
+.chead .lights { margin: 0; gap: 6px; } .chead .lights i { width: 11px; height: 11px; }
+.chead .brand { margin: 0; flex: 1; min-width: 0; gap: 8px; } .chead .brand img { width: 26px; height: 26px; }
+.chead .brand b { font-size: 13px; } .chead .brand small { font-size: 10.5px; }
+.gearb { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; background: rgba(var(--tint), .12); flex: none; }
+.gearb svg { width: 15px; height: 15px; }
+.opw .row { padding: 9px 12px; min-height: 40px; } .opw .row b { font-size: 12.5px; }
+.opw .switch, .colw .switch { width: 40px; height: 23px; }
+.opw .switch::after, .colw .switch::after { width: 19px; height: 19px; }
+.opw .switch.on::after, .colw .switch.on::after { left: 19px; }
+.oplabel { text-align: center; margin-top: 12px; font-weight: 700; font-size: 13px; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.4); line-height: 1.7; }
+.oplabel code { font: 600 12px/1 ui-monospace, Consolas, monospace; padding: 3px 7px; border-radius: 6px; background: rgba(4,20,18,.65); }
+
+.chead .brand > div { min-width: 0; }
+.chead .brand b, .chead .brand small { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.solidw { background: linear-gradient(135deg, rgba(64,222,120,.16), rgba(0,194,232,.08) 55%, rgba(0,194,232,.16)), rgb(4,24,22); box-shadow: inset 0 1px 0 rgba(255,255,255,.5), inset 0 0 0 1.2px rgba(200,255,230,.28); }
+/* column layout */
+.colw { position: absolute; padding: 8px; border-radius: 20px; overflow: hidden; }
+.ctabs { position: relative; z-index: 2; display: flex; gap: 2px; padding: 3px; border-radius: 12px; background: rgba(var(--tint), .1); margin-bottom: 10px; }
+.ctabs > span { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; height: 28px; border-radius: 9px; font-weight: 500; font-size: 12px; }
+.ctabs > span.on { background: rgba(var(--tint), .3); font-weight: 600; }
+.ctabs .ti { width: 16px; height: 16px; border-radius: 5px; display: grid; place-items: center; background: linear-gradient(180deg, rgba(255,255,255,.35), rgba(0,0,0,.12)), var(--c); }
+.ctabs .ti svg { width: 10px; height: 10px; color: #fff; }
+.colw .row { padding: 9px 12px; min-height: 40px; } .colw .row b { font-size: 12.5px; }
+.srow { display: block; padding: 10px 12px 14px; border-top: 1px solid rgba(var(--tint), .14); }
+.srow .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.srow .top b { font-weight: 500; font-size: 12.5px; }
+.srow .val { min-width: 48px; padding: 4px 6px; font-size: 12px; }
+.srow .track { width: auto; margin: 0 10px; }
+.cap2 { position: absolute; color: #fff; font-weight: 700; font-size: 13px; text-shadow: 0 1px 3px rgba(0,0,0,.5); }
+.cap2 small { display: block; font-weight: 500; font-size: 11.5px; opacity: .92; }
 </style>
 </head>
 <body>
@@ -414,6 +452,62 @@ body { font: 13px/1.35 "Inter", "Segoe UI", system-ui, sans-serif; color: var(--
       </div>
     </div>
   </div></div>
+  <div class="wm"><img src="../../docs/assets/logo.png" alt="">SlimeUI</div>
+</div></section>
+
+<!-- ====================== solid (opacity) ====================== -->
+<section class="shot" id="solid"><div class="scene">
+  <div class="blocks">
+    <i style="left:40px;top:60px;width:120px;height:120px;background:#e8473c"></i>
+    <i style="left:210px;top:210px;width:160px;height:70px;background:#f5b723"></i>
+    <i style="left:330px;top:40px;width:90px;height:150px;background:#a84ee0"></i>
+    <i style="left:520px;top:190px;width:140px;height:110px;background:#2f7be0"></i>
+    <i style="left:600px;top:30px;width:80px;height:80px;background:#30d158"></i>
+  </div>
+  <div class="ops">
+    <div><div class="opw" style="background:linear-gradient(135deg, rgba(64,222,120,.16), rgba(0,194,232,.08) 55%, rgba(0,194,232,.16)), rgba(4,24,22,0.66)"><div class="chead"><div class="lights"><i></i><i></i><i></i></div><div class="brand"><img src="../../docs/assets/logo.png" alt=""><div><b>Slime Hub</b><small>by SlimexDev</small></div></div><span class="gearb"><svg><use href="#i-gear"/></svg></span></div><div class="card"><div class="row"><b>Auto farm</b><span class="switch on"></span></div><div class="row"><b>Auto quest</b><span class="switch"></span></div><div class="row"><b>Mob</b><span class="field" style="width:84px;height:26px">Bandit<svg><use href="#i-chev"/></svg></span></div></div></div><div class="oplabel"><code>Opacity = 0</code><br>Glass</div></div>
+    <div><div class="opw" style="background:linear-gradient(135deg, rgba(64,222,120,.16), rgba(0,194,232,.08) 55%, rgba(0,194,232,.16)), rgba(4,24,22,0.83)"><div class="chead"><div class="lights"><i></i><i></i><i></i></div><div class="brand"><img src="../../docs/assets/logo.png" alt=""><div><b>Slime Hub</b><small>by SlimexDev</small></div></div><span class="gearb"><svg><use href="#i-gear"/></svg></span></div><div class="card"><div class="row"><b>Auto farm</b><span class="switch on"></span></div><div class="row"><b>Auto quest</b><span class="switch"></span></div><div class="row"><b>Mob</b><span class="field" style="width:84px;height:26px">Bandit<svg><use href="#i-chev"/></svg></span></div></div></div><div class="oplabel"><code>Opacity = 0.5</code><br>Frosted</div></div>
+    <div><div class="opw" style="background:linear-gradient(135deg, rgba(64,222,120,.16), rgba(0,194,232,.08) 55%, rgba(0,194,232,.16)), rgba(4,24,22,1)"><div class="chead"><div class="lights"><i></i><i></i><i></i></div><div class="brand"><img src="../../docs/assets/logo.png" alt=""><div><b>Slime Hub</b><small>by SlimexDev</small></div></div><span class="gearb"><svg><use href="#i-gear"/></svg></span></div><div class="card"><div class="row"><b>Auto farm</b><span class="switch on"></span></div><div class="row"><b>Auto quest</b><span class="switch"></span></div><div class="row"><b>Mob</b><span class="field" style="width:84px;height:26px">Bandit<svg><use href="#i-chev"/></svg></span></div></div></div><div class="oplabel"><code>Opacity = 1</code><br>Solid (default)</div></div>
+  </div>
+  <div class="wm"><img src="../../docs/assets/logo.png" alt="">SlimeUI</div>
+</div></section>
+
+<!-- ====================== column layout ====================== -->
+<section class="shot" id="column"><div class="scene">
+  
+  <div class="solidw colw" style="left:12px;top:12px;width:262px;height:388px">
+    <div class="chead"><div class="lights"><i></i><i></i><i></i></div><div class="brand"><img src="../../docs/assets/logo.png" alt=""><div><b>Blox Farm</b><small>by SlimexDev</small></div></div><span class="gearb"><svg><use href="#i-gear"/></svg></span></div>
+    <div class="ctabs">
+      <span class="on"><span class="ti" style="--c:#30d158"><svg><use href="#i-flame"/></svg></span>Farm</span>
+      <span><span class="ti" style="--c:#bf5af2"><svg><use href="#i-user"/></svg></span>Player</span>
+      <span><span class="ti" style="--c:#ff9f0a"><svg><use href="#i-arrow"/></svg></span>Teleport</span>
+    </div>
+    <div class="sect">Farm</div>
+    <div class="card">
+      <div class="row"><b>Auto farm</b><span class="switch on"></span></div>
+      <div class="row"><b>Mob</b><span class="field" style="width:96px;height:26px">Bandit<svg><use href="#i-chev"/></svg></span></div>
+      <div class="srow"><div class="top"><b>Distance</b><span class="val">12 studs</span></div><div class="track"><div class="fill" style="width:30%"></div></div></div>
+      <div class="row"><b>Auto quest</b><span class="switch"></span></div>
+      <div class="row"><b>Auto sell</b><span class="switch on"></span></div>
+    </div>
+  </div>
+  <span class="movebar" style="left:105px;width:76px;top:408px;height:4px"></span>
+  <div class="cap2" style="left:300px;top:24px">Docked to the left edge<small>Tabs in a bar, Settings behind the gear</small></div>
+
+  <div class="solidw colw" style="left:300px;top:96px;width:228px;height:236px">
+    <div class="chead"><div class="lights"><i></i><i></i><i></i></div><div class="brand"><img src="../../docs/assets/logo.png" alt=""><div><b>Clicker</b><small>by SlimexDev</small></div></div><span class="gearb"><svg><use href="#i-gear"/></svg></span></div>
+    <div class="card">
+      <div class="row"><b>Auto click</b><span class="switch on"></span></div>
+      <div class="srow"><div class="top"><b>Clicks / sec</b><span class="val">20</span></div><div class="track"><div class="fill" style="width:40%"></div></div></div>
+      <div class="row"><b>Auto rebirth</b><span class="switch"></span></div>
+    </div>
+  </div>
+  <div class="cap2" style="left:306px;top:342px">One tab<small>No tab bar</small></div>
+
+  <div class="solidw colw" style="left:546px;top:96px;width:200px;height:56px;padding:6px 4px">
+    <div class="chead"><div class="lights"><i></i><i></i><i></i></div><div class="brand"><img src="../../docs/assets/logo.png" alt=""><div><b>Blox Farm</b><small>by SlimexDev</small></div></div></div>
+  </div>
+  <div class="cap2" style="left:552px;top:164px">Minimized<small>Yellow button: title bar only</small></div>
   <div class="wm"><img src="../../docs/assets/logo.png" alt="">SlimeUI</div>
 </div></section>
 

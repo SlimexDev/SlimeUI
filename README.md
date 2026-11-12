@@ -53,6 +53,8 @@ local SlimeUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Slime
 
 ## Quick start
 
+<p align="center"><img src="docs/assets/shots/solid.webp" width="640" alt="Opacity 0, 0.5 and 1"></p>
+
 With no `Theme`, the window uses `Midnight` (black). Windows are solid by default; set `Opacity` between `0` (glass) and `1` (solid), or call `Window:SetOpacity(v)` later.
 
 ```lua
@@ -133,6 +135,8 @@ Pushing a tag such as `v1.0.1` creates a GitHub release with `SlimeUI.lua` attac
 SlimeUI is released under the [MIT License](LICENSE).
 
 ## Column layout
+
+<p align="center"><img src="docs/assets/shots/column.webp" width="640" alt="Column layout"></p>
 
 For games that need one tab or only a few, use the narrow column window. It docks to the left edge of the screen (drag it away to undock, drop it near the edge to dock again), shows tabs in a bar under the title when there are two or more, and keeps Settings behind the gear button.
 
